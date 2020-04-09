@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>云咨询 on 堆栈运维</title>
-    <link>https://netmesh-cn.github.io/www/tags/%E4%BA%91%E5%92%A8%E8%AF%A2/</link>
+    <link>https://www.netmesh.cn/tags/%E4%BA%91%E5%92%A8%E8%AF%A2/</link>
     <description>Recent content in 云咨询 on 堆栈运维</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sklinux@qq.com (SK)</managingEditor>
     <webMaster>sklinux@qq.com (SK)</webMaster>
     <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://netmesh-cn.github.io/www/tags/%E4%BA%91%E5%92%A8%E8%AF%A2/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.netmesh.cn/tags/%E4%BA%91%E5%92%A8%E8%AF%A2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>云咨询</title>
-      <link>https://netmesh-cn.github.io/www/posts/devops/%E4%BA%91%E5%92%A8%E8%AF%A2/</link>
+      <link>https://www.netmesh.cn/posts/devops/%E4%BA%91%E5%92%A8%E8%AF%A2/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       <author>sklinux@qq.com (SK)</author>
-      <guid>https://netmesh-cn.github.io/www/posts/devops/%E4%BA%91%E5%92%A8%E8%AF%A2/</guid>
+      <guid>https://www.netmesh.cn/posts/devops/%E4%BA%91%E5%92%A8%E8%AF%A2/</guid>
       <description>&lt;p&gt;我们根据客户业务发展目标，为客户绘制云服务蓝图，进行云战略规划、上云评估，帮助客户择云、选云。从传统的IDC机房到公共云的业务迁移，为客户降低IT运维成本，优化IT投入，提供最契合客户业务及IT的云发展建议。&lt;/p&gt;</description>
     </item>
     

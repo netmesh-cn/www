@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>业务范围 on 堆栈运维</title>
-    <link>https://netmesh-cn.github.io/www/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
+    <link>https://www.netmesh.cn/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
     <description>Recent content in 业务范围 on 堆栈运维</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sklinux@qq.com (SK)</managingEditor>
     <webMaster>sklinux@qq.com (SK)</webMaster>
     <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://netmesh-cn.github.io/www/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.netmesh.cn/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>业务范围</title>
-      <link>https://netmesh-cn.github.io/www/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
+      <link>https://www.netmesh.cn/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       <author>sklinux@qq.com (SK)</author>
-      <guid>https://netmesh-cn.github.io/www/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</guid>
+      <guid>https://www.netmesh.cn/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</guid>
       <description>&lt;p&gt;云管理服务：云咨询、云迁移、云部署云运维以及帮助传统企业云培训。&lt;/p&gt;</description>
     </item>
     
