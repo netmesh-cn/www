@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>云迁移 on 堆栈运维</title>
-    <link>https://www.netmesh.cn/tags/%E4%BA%91%E8%BF%81%E7%A7%BB/</link>
+    <link>https://netmesh-cn.github.io/www/tags/%E4%BA%91%E8%BF%81%E7%A7%BB/</link>
     <description>Recent content in 云迁移 on 堆栈运维</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sklinux@qq.com (SK)</managingEditor>
     <webMaster>sklinux@qq.com (SK)</webMaster>
     <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://www.netmesh.cn/tags/%E4%BA%91%E8%BF%81%E7%A7%BB/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://netmesh-cn.github.io/www/tags/%E4%BA%91%E8%BF%81%E7%A7%BB/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>云部署</title>
-      <link>https://www.netmesh.cn/posts/devops/%E4%BA%91%E9%83%A8%E7%BD%B2/</link>
+      <link>https://netmesh-cn.github.io/www/posts/devops/%E4%BA%91%E9%83%A8%E7%BD%B2/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       <author>sklinux@qq.com (SK)</author>
-      <guid>https://www.netmesh.cn/posts/devops/%E4%BA%91%E9%83%A8%E7%BD%B2/</guid>
+      <guid>https://netmesh-cn.github.io/www/posts/devops/%E4%BA%91%E9%83%A8%E7%BD%B2/</guid>
       <description>&lt;p&gt;我们根据企业客户要求整体搭建云平台，针对应用设计云端架构，安装部署应用组件并建设集群，实现高可用及弹性，优化应用效率，完成数据的迁移及部署。包括私有云部署、公有云部署、混合云部署以及云迁移服务。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>云部署</title>
-      <link>https://www.netmesh.cn/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</link>
+      <link>https://netmesh-cn.github.io/www/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       <author>sklinux@qq.com (SK)</author>
-      <guid>https://www.netmesh.cn/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</guid>
+      <guid>https://netmesh-cn.github.io/www/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</guid>
       <description>&lt;p&gt;我们可以赋予商家哪些能力？
 我们集合多年的网络营销经验，把最好的提炼出来优化升级，化繁为简，让每个普通商家都可以学得会，用得起，每一项功能都为提升商家营业额而奋斗！。&lt;/p&gt;</description>
     </item>
