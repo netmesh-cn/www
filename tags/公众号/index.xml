@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>公众号 on 堆栈运维</title>
+    <link>https://www.netmesh.cn/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/</link>
+    <description>Recent content in 公众号 on 堆栈运维</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>云部署</title>
+      <link>https://www.netmesh.cn/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/%E5%85%AC%E4%BC%97%E5%8F%B7/</guid>
+      <description>&lt;p&gt;我们可以赋予商家哪些能力？
+我们集合多年的网络营销经验，把最好的提炼出来优化升级，化繁为简，让每个普通商家都可以学得会，用得起，每一项功能都为提升商家营业额而奋斗！。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
