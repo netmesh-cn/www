@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>微服务部署方案对比 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="微服务部署方案，在生产环境中的部署对比">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">微服务部署方案对比</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri May 31, 2019</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">性能调优</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>目前有很多用于部署的技术，有的简单、有的复杂、有的得停机、有的不需要停机即可完成部署。</p>
+
+<p>本文笔者简单讨论一下目前比较流行的几种部署方案，或者说策略。如有不足之处请指出，如有谬误，请指正。</p>
+
+<h4 id="blue-green-deployment-蓝绿部署">Blue/Green Deployment（蓝绿部署）</h4>
+
+<p>蓝绿部署无需停机，并且风险较小。</p>
+
+<p>(1) 部署版本1的应用（一开始的状态）</p>
+
+<p>所有外部请求的流量都打到这个版本上。</p>
+
+<p>(2) 部署版本2的应用</p>
+
+<p>版本2的代码与版本1不同(新功能、Bug修复等)。</p>
+
+<p>(3) 将流量从版本1切换到版本2。</p>
+
+<p>(4) 如版本2测试正常，就删除版本1正在使用的资源（例如实例），从此正式用版本2。</p>
+
+<p>从过程不难发现，在部署的过程中，我们的应用始终在线。并且，新版本上线的过程中，并没有修改老版本的任何内容，在部署期间，老版本的状态不受影响。这样风险很小，并且，只要老版本的资源不被删除，理论上，我们可以在任何时间回滚到老版本。</p>
+
+<h4 id="rolling-update-滚动发布">rolling update（滚动发布）</h4>
+
+<p>滚动发布，一般是取出一个或者多个服务器停止服务，执行更新，并重新将其投入使用。周而复始，直到集群中所有的实例都更新成新版本。</p>
+
+<p>这种部署方式相对于蓝绿部署，更加节约资源——它不需要运行两个集群、两倍的实例数。我们可以部分部署，例如每次只取出集群的20%进行升级。</p>
+
+<p>这种方式也有很多缺点，例如：</p>
+
+<p>(1) 没有一个确定OK的环境。使用蓝绿部署，我们能够清晰地知道老版本是OK的，而使用滚动发布，我们无法确定。</p>
+
+<p>(2) 修改了现有的环境。</p>
+
+<p>(3) 如果需要回滚，很困难。举个例子，在某一次发布中，我们需要更新100个实例，每次更新10个实例，每次部署需要5分钟。当滚动发布到第80个实例时，发现了问题，需要回滚。此时，脾气不好的程序猿很可能想掀桌子，因为回滚是一个痛苦，并且漫长的过程。</p>
+
+<p>(4) 有的时候，我们还可能对系统进行动态伸缩，如果部署期间，系统自动扩容/缩容了，我们还需判断到底哪个节点使用的是哪个代码。尽管有一些自动化的运维工具，但是依然令人心惊胆战。</p>
+
+<p>并不是说滚动发布不好，滚动发布也有它非常合适的场景。</p>
+
+<h4 id="灰度发布-金丝雀部署">灰度发布/金丝雀部署</h4>
+
+<p>先贴个百度百科：</p>
+
+<p>灰度发布是指在黑与白之间，能够平滑过渡的一种发布方式。AB test就是一种灰度发布方式，让一部分用户继续用A，一部分用户开始用B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。<br />
+灰度发布可以保证整体系统的稳定，在初始灰度的时候就可以发现、调整问题，以保证其影响度。</p>
+
+<p>很多人把灰度发布与蓝绿部署混为一谈，笔者认为，与灰度发布最类似的应该是金丝雀部署。</p>
+
+<p>“金丝雀部署”是增量发布的一种类型，它的执行方式是在原有软件生产版本可用的情况下，同时部署一个新的版本。同时运行同一个软件产品的多个版本需要软件针对配置和完美自动化部署进行特别设计。</p>
+
+<p>我们来看一下金丝雀部署的步骤：</p>
+
+<p>(1) 准备好部署各个阶段的工件，包括：构建工件，测试脚本，配置文件和部署清单文件。</p>
+
+<p>(2) 从负载均衡列表中移除掉“金丝雀”服务器。</p>
+
+<p>(3) 升级“金丝雀”应用（排掉原有流量并进行部署）。</p>
+
+<p>(4) 对应用进行自动化测试。</p>
+
+<p>(5) 将“金丝雀”服务器重新添加到负载均衡列表中（连通性和健康检查）。</p>
+
+<p>(6) 如果“金丝雀”在线使用测试成功，升级剩余的其他服务器。（否则就回滚）</p>
+
+<p>灰度发布中，常常按照用户设置路由权重，例如90%的用户维持使用老版本，10%的用户尝鲜新版本。不同版本应用共存，经常与A/B测试一起使用，用于测试选择多种方案。灰度发布比较典型的例子，是阿里云那个“新版本”，点击“进入新版本”，我们就成了金丝雀。</p>
+
+<p>趣闻 ：金丝雀部署（同理还有金丝雀测试），“金丝雀”的由来：17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上一只金丝雀作为“瓦斯检测指标”，以便在危险状况下紧急撤离。</p>
+
+<h4 id="总结">总结</h4>
+
+<p>(1) 蓝绿部署：不停止老版本，额外搞一套新版本，等测试发现新版本OK后，删除老版本。</p>
+
+<p>(2) 滚动发布：按批次停止老版本实例，启动新版本实例。</p>
+
+<p>(3) 灰度发布/金丝雀部署：不停止老版本，额外搞一套新版本，常常按照用户设置路由权重，例如90%的用户维持使用老版本，10%的用户尝鲜新版本。<br />
+不同版本应用共存，经常与A/B测试一起使用，用于测试选择多种方案。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/k8s/istio-ingress-sds%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%9C%E7%A2%8D%E7%BB%95%E8%A1%8C%E6%96%B9%E6%B3%95/" data-toggle="tooltip" data-placement="top" title="istio-ingress-sds的一些障碍绕行方法">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/" data-toggle="tooltip" data-placement="top" title="去域名-加速你的移动APP访问">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/">去域名-加速你的移动APP访问</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/">优化nginx静态资源</a></li>
+                    
+                    <li><a href="/posts/devops/varnish%E6%9B%BF%E6%8D%A2squid%E7%9A%84%E5%8E%9F%E5%9B%A0/">varnish替换squid的原因</a></li>
+                    
+                    <li><a href="/posts/devops/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96/">DNS预获取提升页面载入速度</a></li>
+                    
+                    <li><a href="/posts/mysql/mysql-5.7%E5%AF%86%E7%A0%81/">mysql-5.7密码</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri May 31, 2019</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">性能调优</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

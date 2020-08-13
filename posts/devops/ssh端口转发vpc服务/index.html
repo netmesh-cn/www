@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>SSH转发VPC内部服务 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="ssh隧道转发的一些例子">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91vpc%E6%9C%8D%E5%8A%A1/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91vpc%E6%9C%8D%E5%8A%A1/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">SSH转发VPC内部服务</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Aug 1, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>使用SSH搭建隧道，让Devops人员访问VPC内部的一些服务，既安全又方便，即开即用是杀人越货必备之神器！</p>
+
+<h3 id="ssh端口转发">SSH端口转发</h3>
+
+<p>1.正向隧道-隧道监听本地port,为普通活动提供安全连接</p>
+
+<pre><code>ssh -qTfnN -L port:host:hostport -l user remote_ip 
+将远程的某个端口服务映射到本地端口
+</code></pre>
+
+<p>2.反向隧道&mdash;-隧道监听远程port，突破防火墙提供服务</p>
+
+<pre><code>ssh -qTfnN -R port:host:hostport -l user remote_ip
+将本地端口映射到远程服务器的某个端口，可以让服务器在本地连接，我的端口
+</code></pre>
+
+<p>3.socks代理</p>
+
+<p>SSH -qTfnN -D port remotehost（用证书验证就直接主机名，没用的还要加上用户名密码）</p>
+
+<p>-q Quiet mode. 安静模式，忽略一切对话和错误提示。</p>
+
+<p>-T Disable pseudo-tty allocation. 不占用 shell 了。</p>
+
+<p>-f Requests ssh to go to background just before command execution. 后台运行，并推荐加上 -n 参数。</p>
+
+<p>-n Redirects stdin from /dev/null (actually, prevents reading from stdin). -f 推荐的，不加这条参数应该也行。</p>
+
+<p>-N Do not execute a remote command. 不执行远程命令，专为端口转发度身打造。</p>
+
+<p>ssh实现转发, 只要用到以下两条命令:</p>
+
+<pre><code># ssh -CfNg -L 6300:127.0.0.1:1521 oracle@172.16.1.164
+表示把远程172.16.1.164上的1521服务转发到本机6300端口
+# ssh -CfNg -R 1521:127.0.0.1:6300 oracle@172.16.1.164
+</code></pre>
+
+<p>不论是做跳板, 还是加密隧道, 还是加密其他的网络连接也都是这两条命令。
+视具体情况而定, 有时只要用到其中一条, 有时两条都要用到.</p>
+
+<h3 id="参数说明">参数说明</h3>
+
+<p>使用方式:<br />
+ssh -L 本地端口:服务器地址:服务器端口 用户名@服务器地址 -N</p>
+
+<p>-f Fork into background after authentication.
+后台认证用户/密码，通常和-N连用，不用登录到远程主机。</p>
+
+<p>-p port Connect to this port. Server must be on the same port.
+被登录的ssd服务器的sshd服务端口。</p>
+
+<p>-L port:host:hostport
+端口映射参数 本地端口 - 这个任意即可，只要本机没有其他的程序占用这个端口就行</p>
+
+<p>-R port:host:hostport
+将远程主机(服务器)的某个端口转发到本地端指定机器的指定端口. 工作原理是这样的, 远程主机上分配了一个 socket 侦听 port 端口, 一旦这个端口上有了连接，该连接就经过安全通道转向出去，同时本地主机和 host 的 hostport 端口建立连接。 可以在配置文件中指定端口的转发。 只有用 root 登录远程主机才能转发特权端口。</p>
+
+<p>-D port
+指定一个本地机器 “动态的&rsquo;’ 应用程序端口转发. 工作原理是这样的, 本地机器上分配了一个 socket 侦听 port 端口, 一旦这个端口上有了连接, 该连接就经过安全通道转发出去, 根据应用程序的协议可以判断出远程主机将和哪里连接. 目前支持 SOCKS4 协议, 将充当 SOCKS4 服务器. 只有 root 才能转发特权端口. 可以在配置文件中指定动态端口的转发。</p>
+
+<p>-C Enable compression.
+压缩数据传输。</p>
+
+<p>-N Do not execute a shell or command.
+不执行脚本或命令，通常与-f连用。不使用Shell窗口，纯做转发的时候用，如果你在映射完成后继续在服务器上输入命令，去掉这个参数即可。<br />
+在ssh代理在后台运行，但是在中国目前的网络情况下，最好是放在前台，运行一些top交互命令。以此保持长活动链接，防止被电信主动断开ES链接。</p>
+
+<p>-g Allow remote hosts to connect to forwarded ports.
+在-L/-R/-D参数中，允许远程主机连接到建立的转发的端口，如果不加这个参数，只允许本地主机建立连接</p>
+
+<p>举例:</p>
+
+<pre><code>(localhost)#ssh  -L 127.0.0.1:8080:192.168.200.253:8080 loguser@8.8.8.8
+表示在本机开放一个端口8080，转发到8.8.8.8的内网192.168.200.253的8080服务上
+
+(A)#ssh -CNfg -R 8888:localhost:2121 root@B
+将A机的2121端口映射到B机器的8888端口
+也可以这样
+(A)#ssh -CNfg -R 8888:A网络中的其他ip:2121 root@B
+将A机网络中其他服务器IP的2121端口映射到B机器的8888端口
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/apollo%E5%9C%A8k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/" data-toggle="tooltip" data-placement="top" title="k8s集群中部署apollo配置中心">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/mysql7%E5%AF%86%E7%A0%81%E5%BC%BA%E5%BA%A6%E7%AD%96%E7%95%A5/" data-toggle="tooltip" data-placement="top" title="mysql7密码强度策略">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/apollo%E5%9C%A8k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">k8s集群中部署apollo配置中心</a></li>
+                    
+                    <li><a href="/posts/devops/jaeger%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E9%83%A8%E7%BD%B2%E4%BB%A5%E5%8F%8A%E4%B8%9A%E5%8A%A1%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%85%A5/">jager分布式跟踪部署</a></li>
+                    
+                    <li><a href="/posts/devops/%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84nginx%E6%97%A5%E5%BF%97%E6%BB%9A%E5%8A%A8/">容器中Nginx日志的切割滚动</a></li>
+                    
+                    <li><a href="/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/">升级kubernetes到1.15</a></li>
+                    
+                    <li><a href="/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/">Kubernetes发布策略</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Aug 1, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

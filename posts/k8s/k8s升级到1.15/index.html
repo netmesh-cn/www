@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>升级kubernetes到1.15 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="将k8s从v1.14升级到1.15版本">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">升级kubernetes到1.15</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jul 1, 2019</h4>
+    </section>
+    <h5 id="wc">1000 Words|Read in about 5 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/k8s/">k8s</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+  <aside class="toc">
+    
+  </aside>
+  
+
+
+                <p>Kubernetes v1.15的重点关注的更新:<br />
+kubeadm证书管理在1.15中变得更加强大，kubeadm现在可以在它们到期之前无缝转动所有证书（升级时）有关如何管理证书的信息，请查看kubeadm文档。</p>
+
+<pre><code>Kubernetes 1.15 consists of 25 enhancements: 2 moving to stable, 13 in beta, and 10 in alpha. The main themes of this release are:
+
+Continuous Improvement
+Project sustainability is not just about features. Many SIGs have been working on improving test coverage, ensuring the basics stay reliable, and stability of the core feature set and working on maturing existing features and cleaning up the backlog.
+Extensibility
+The community has been asking for continuing support of extensibility, so this cycle features more work around CRDs and API Machinery. Most of the enhancements in this cycle were from SIG API Machinery and related areas.
+具体详情请看
+https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.15.md#115-whats-new
+</code></pre>
+
+<p>master:</p>
+
+<p>1.先升级kubeadm kubelet kubectl</p>
+
+<pre><code>@centos7.x
+yum install  -y kubelet kubeadm kubectl
+or
+ubuntu 16 or 18
+apt install  -y kubelet kubeadm kubectl
+</code></pre>
+
+<pre><code>root@node20:~# kubeadm upgrade plan
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[preflight] Running pre-flight checks.
+[upgrade] Making sure the cluster is healthy:
+[upgrade] Fetching available versions to upgrade to
+[upgrade/versions] Cluster version: v1.14.0
+[upgrade/versions] kubeadm version: v1.15.0
+</code></pre>
+
+<p>保证你的master节点可以拉起海外image。如果不行请提前在海外拉取回来在主节点load。</p>
+
+<pre><code>COMPONENT   CURRENT       AVAILABLE
+Kubelet     2 x v1.14.0   v1.15.0
+            1 x v1.14.1   v1.15.0
+            1 x v1.15.0   v1.15.0
+
+Upgrade to the latest version in the v1.14 series:
+
+COMPONENT            CURRENT   AVAILABLE
+API Server           v1.14.0   v1.15.0
+Controller Manager   v1.14.0   v1.15.0
+Scheduler            v1.14.0   v1.15.0
+Kube Proxy           v1.14.0   v1.15.0
+CoreDNS              1.3.1     1.3.1
+Etcd                 3.3.10    3.3.10
+
+You can now apply the upgrade by executing the following command:
+
+	kubeadm upgrade apply v1.15.0
+</code></pre>
+
+<p>执行</p>
+
+<pre><code>kubeadm upgrade apply v1.15.0
+</code></pre>
+
+<p>然后会发现下面的信息：</p>
+
+<pre><code>[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[preflight] Running pre-flight checks.
+[upgrade] Making sure the cluster is healthy:
+[upgrade/version] You have chosen to change the cluster version to &quot;v1.15.0&quot;
+[upgrade/versions] Cluster version: v1.14.0
+[upgrade/versions] kubeadm version: v1.15.0
+[upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
+[upgrade/prepull] Will prepull images for components [kube-apiserver kube-controller-manager kube-scheduler etcd]
+[upgrade/prepull] Prepulling image for component etcd.
+[upgrade/prepull] Prepulling image for component kube-apiserver.
+[upgrade/prepull] Prepulling image for component kube-controller-manager.
+[upgrade/prepull] Prepulling image for component kube-scheduler.
+[apiclient] Found 0 Pods for label selector k8s-app=upgrade-prepull-kube-scheduler
+[apiclient] Found 0 Pods for label selector k8s-app=upgrade-prepull-kube-controller-manager
+[apiclient] Found 0 Pods for label selector k8s-app=upgrade-prepull-etcd
+[apiclient] Found 0 Pods for label selector k8s-app=upgrade-prepull-kube-apiserver
+[apiclient] Found 1 Pods for label selector k8s-app=upgrade-prepull-kube-scheduler
+[apiclient] Found 1 Pods for label selector k8s-app=upgrade-prepull-kube-controller-manager
+[apiclient] Found 1 Pods for label selector k8s-app=upgrade-prepull-etcd
+[apiclient] Found 1 Pods for label selector k8s-app=upgrade-prepull-kube-apiserver
+[upgrade/prepull] Prepulled image for component kube-apiserver.
+[upgrade/prepull] Prepulled image for component etcd.
+[upgrade/prepull] Prepulled image for component kube-controller-manager.
+[upgrade/prepull] Prepulled image for component kube-scheduler.
+[upgrade/prepull] Successfully prepulled the images for all the control plane components
+[upgrade/apply] Upgrading your Static Pod-hosted control plane to version &quot;v1.15.0&quot;...
+Static pod: kube-apiserver-node20 hash: abf03cd700e41a72b6ed17c8f22f2b1c
+Static pod: kube-controller-manager-node20 hash: ab6c58bb7e8650fee56e97401fb72f03
+Static pod: kube-scheduler-node20 hash: b9b98173c3f4bbf002d9b1d0d7e3328f
+[upgrade/etcd] Upgrading to TLS for etcd
+[upgrade/staticpods] Writing new Static Pod manifests to &quot;/etc/kubernetes/tmp/kubeadm-upgraded-manifests437209780&quot;
+[upgrade/staticpods] Preparing for &quot;kube-apiserver&quot; upgrade
+[upgrade/staticpods] Renewing apiserver certificate
+[upgrade/staticpods] Renewing apiserver-kubelet-client certificate
+[upgrade/staticpods] Renewing front-proxy-client certificate
+[upgrade/staticpods] Renewing apiserver-etcd-client certificate
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-apiserver.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-07-01-16-06-10/kube-apiserver.yaml&quot;
+[upgrade/staticpods] Waiting for the kubelet to restart the component
+[upgrade/staticpods] This might take a minute or longer depending on the component/version gap (timeout 5m0s)
+Static pod: kube-apiserver-node20 hash: abf03cd700e41a72b6ed17c8f22f2b1c
+Static pod: kube-apiserver-node20 hash: abf03cd700e41a72b6ed17c8f22f2b1c
+Static pod: kube-apiserver-node20 hash: abf03cd700e41a72b6ed17c8f22f2b1c
+Static pod: kube-apiserver-node20 hash: 6cd4bd360d0cf02d1c0e07c586905d6a
+[apiclient] Found 1 Pods for label selector component=kube-apiserver
+[upgrade/staticpods] Component &quot;kube-apiserver&quot; upgraded successfully!
+[upgrade/staticpods] Preparing for &quot;kube-controller-manager&quot; upgrade
+[upgrade/staticpods] Renewing controller-manager.conf certificate
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-controller-manager.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-07-01-16-06-10/kube-controller-manager.yaml&quot;
+[upgrade/staticpods] Waiting for the kubelet to restart the component
+[upgrade/staticpods] This might take a minute or longer depending on the component/version gap (timeout 5m0s)
+Static pod: kube-controller-manager-node20 hash: ab6c58bb7e8650fee56e97401fb72f03
+Static pod: kube-controller-manager-node20 hash: 50fc181fd2b3cc384fd8c5b5e286c1c4
+[apiclient] Found 1 Pods for label selector component=kube-controller-manager
+[upgrade/staticpods] Component &quot;kube-controller-manager&quot; upgraded successfully!
+[upgrade/staticpods] Preparing for &quot;kube-scheduler&quot; upgrade
+[upgrade/staticpods] Renewing scheduler.conf certificate
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-scheduler.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2019-07-01-16-06-10/kube-scheduler.yaml&quot;
+[upgrade/staticpods] Waiting for the kubelet to restart the component
+[upgrade/staticpods] This might take a minute or longer depending on the component/version gap (timeout 5m0s)
+Static pod: kube-scheduler-node20 hash: b9b98173c3f4bbf002d9b1d0d7e3328f
+Static pod: kube-scheduler-node20 hash: 31d9ee8b7fb12e797dc981a8686f6b2b
+[apiclient] Found 1 Pods for label selector component=kube-scheduler
+[upgrade/staticpods] Component &quot;kube-scheduler&quot; upgraded successfully!
+[upload-config] Storing the configuration used in ConfigMap &quot;kubeadm-config&quot; in the &quot;kube-system&quot; Namespace
+[kubelet] Creating a ConfigMap &quot;kubelet-config-1.15&quot; in namespace kube-system with the configuration for the kubelets in the cluster
+[kubelet-start] Downloading configuration for the kubelet from the &quot;kubelet-config-1.15&quot; ConfigMap in the kube-system namespace
+[kubelet-start] Writing kubelet configuration to file &quot;/var/lib/kubelet/config.yaml&quot;
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+[upgrade/successful] SUCCESS! Your cluster was upgraded to &quot;v1.15.0&quot;. Enjoy!
+
+[upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
+</code></pre>
+
+<p>主节点就升级成功了！</p>
+
+<pre><code>可以重启下，也可以不重启
+systemctl daemon-reload
+systemctl restart kubelet
+</code></pre>
+
+<p>升级其它master节点，如果有的话执行下面的：</p>
+
+<pre><code>kubeadm upgrade node control-plane
+</code></pre>
+
+<p>node:</p>
+
+<pre><code>@centos7.x
+yum install  -y kubelet kubeadm kubectl
+or
+ubuntu 16 or 18
+apt install  -y kubelet kubeadm kubectl
+
+systemctl daemon-reload
+systemctl restart kubelet
+</code></pre>
+
+<p>开始升级计算节点：</p>
+
+<pre><code>kubeadm upgrade node
+</code></pre>
+
+<p>核验升级成果示范:</p>
+
+<pre><code>➜  ~ kubectl get nodes
+NAME     STATUS   ROLES    AGE   VERSION
+node20   Ready    master   84d   v1.15.0
+node21   Ready    &lt;none&gt;   84d   v1.15.0
+node22   Ready    &lt;none&gt;   82d   v1.15.0
+node23   Ready    &lt;none&gt;   55d   v1.15.0
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/" data-toggle="tooltip" data-placement="top" title="Kubernetes发布策略">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84nginx%E6%97%A5%E5%BF%97%E6%BB%9A%E5%8A%A8/" data-toggle="tooltip" data-placement="top" title="容器中Nginx日志的切割滚动">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/">ServiceMesh流量走向</a></li>
+                    
+                    <li><a href="/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/">Kubernetes发布策略</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%BC%80%E5%90%AFhttp2/">Nginx开启http2</a></li>
+                    
+                    <li><a href="/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">zk在k8s中的部署</a></li>
+                    
+                    <li><a href="/posts/devops/kubernetes%E5%A2%9E%E5%8A%A0%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9/">kubernetes增加计算节点</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jul 1, 2019</h4>
+    </section>
+    <h5 id="wc">1000 Words|Read in about 5 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/k8s/">k8s</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

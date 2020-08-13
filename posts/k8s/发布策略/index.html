@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>Kubernetes发布策略 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="Kubernetes中的应用发布策略介绍">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">Kubernetes发布策略</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jun 24, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/kubernetes/">kubernetes</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>在 Kubernetes中，有不同的发布更新的方式，有必要选择正确的策略。以便应用程序更新期间使产品基础架构可靠，尽量对用户产生影响。</p>
+
+<p>Kubernetes的发布策略，主流有下面三种：</p>
+
+<p>1.重建更新(Recreate)&mdash;停止旧版本部署新版本</p>
+
+<pre><code class="language-yaml">spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+</code></pre>
+
+<p>2.滚动更新（rolling-update)&mdash;一个接一个地以滚动更新方式发布新版本</p>
+
+<p>3.蓝绿更新&mdash;新版本与旧版本一起存在，然后切换流量</p>
+
+<p>4.灰度更新(canary&mdash;将新版本面向一部分用户发布，然后继续全量发布</p>
+
+<h3 id="重建更新">重建更新</h3>
+
+<h4 id="优点">优点</h4>
+
+<pre><code>1.应用状态全部更新。  
+更新deployment是先全部删除所有pod，然后重建以新的img为标签的deployment。    
+</code></pre>
+
+<h4 id="缺点">缺点</h4>
+
+<pre><code>1.停机时间取决于应用程序的关闭和启动消耗的时间  
+</code></pre>
+
+<h3 id="滚动更新">滚动更新</h3>
+
+<pre><code class="language-yaml">spec:
+  replicas: 3 #总共副本数为3
+  strategy:
+    type: RollingUpdate #滚动更新为默认更新策略
+    rollingUpdate:
+      maxSurge: 2        # 一次可以添加多少个Pod
+      maxUnavailable: 1  # 滚动更新期间，最多个不可用Pod数。
+      #maxUnavailable设置为0可以完全确保在滚动更新期间服务不受影响，还可以使用百分比的值来进行设置。
+</code></pre>
+
+<h4 id="优点-1">优点</h4>
+
+<pre><code>1.版本在实例之间缓慢替换 每次拉起成功后才能算是添加可用pod 
+
+2.rollout/rollback 可能需要一定时间  
+
+3.一次性更新完所有老版本  
+</code></pre>
+
+<h4 id="缺点-1">缺点</h4>
+
+<pre><code>1.无法控制流量  
+</code></pre>
+
+<h3 id="蓝绿更新">蓝绿更新</h3>
+
+<h4 id="优点-2">优点</h4>
+
+<pre><code>1.实时部署/回滚  
+2.避免版本问题，因为一次更改是整个应用的改变  
+3.可用根据副本数进行一定的比例进行流量控制  
+</code></pre>
+
+<h4 id="缺点-2">缺点</h4>
+
+<pre><code>1.需要两倍的资源  
+2.在发布到生产之前，应该对整个应用进行适当的测试  
+3.多版本共存
+</code></pre>
+
+<p>蓝绿更新有两种模式：</p>
+
+<h4 id="1-动态模式">1.动态模式</h4>
+
+<p>描述：
+    例如部署服务SSO对应svc的标签选择器为app: sso,根据多个deployment永远一样的标签，但是拥有不同的docker image版本。通过不同版本的pod副本数量，影响svc选中pod的比重。<br />
+从而影响流量的选择。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: sso
+  labels:
+    app: sso
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: sso        #这里选择app为sso的deployment标签作为后端真实实例
+    ```
+  然后升级前存在的v2019.6.23版本的deployment
+```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:sso-v2019623
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: sso
+        version: &quot;v2019.6.23&quot;
+      annotations:
+        prometheus.io/scrape: &quot;true&quot;
+        prometheus.io/port: &quot;32111&quot;
+    spec:
+      containers:
+      - name: sso
+        image: docker.sklinux.com/xx/sso:v2019.6.23
+        env:
+        - name: VERSION
+          value: &quot;v2019.6.23&quot;
+        ports: 
+        - containerPort: 80
+        - containerPort: 32111
+</code></pre>
+
+<p>现在要插入一个v2019.6.24版本，流量接入为10%。则deployment部署文件是：</p>
+
+<pre><code class="language-yaml">apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:sso-sso-v2019624
+spec:
+  replicas: 1 #副本数 为1，新版本为1，老版本为10,总副本数为11。大约9%的流量会到这个版本
+  template:
+    metadata:
+      labels:
+        app: sso #标签app=sso，会被上面sso的svc选中并流量转发过来。
+        version: &quot;v2019.6.24&quot;
+      annotations:
+        prometheus.io/scrape: &quot;true&quot;
+        prometheus.io/port: &quot;32111&quot;
+    spec:
+      containers:
+      - name: sso
+        image: docker.sklinux.com/xx/sso:v2019.6.24
+        env:
+        - name: VERSION
+          value: &quot;v2019.6.24&quot;
+        ports: 
+        - containerPort: 80
+        - containerPort: 32111
+</code></pre>
+
+<p>根据观察v2019.6.24的运行情况。可以逐渐加大新版本的副本数，并减少老版本副本数。<br />
+不断收敛后，可以将sso-v2019.6.23下线。<br />
+调整副本为：</p>
+
+<pre><code>kubectl patch deployment sso-v2019624 -p '{&quot;spec&quot;:{&quot;selector&quot;:{&quot;replicas&quot;:&quot;10&quot;}}}'  
+kubectl patch deployment sso-v2019623 -p '{&quot;spec&quot;:{&quot;selector&quot;:{&quot;replicas&quot;:&quot;1&quot;}}}'
+</code></pre>
+
+<p>总结：此模式，是一个标签下面多个deploymen，每个deployment拥有相同的一组标签，供SVC选择调度。这种模式的特点是svc固定标签选择，动态增加、删除不同的deployment组，达到更新的目的。
+回滚：删除新的deployment即可<br />
+特点： SVC不变，deployment变，可以更加副本数量控制流量</p>
+
+<h4 id="2-静态整切模式">2.静态整切模式</h4>
+
+<p>描述：</p>
+
+<p>例如部署服务SSO对应svc的标签选择器为app: sso以及version: v2019.6.23,后端部署一个标签为app:sso和version: v2019.6.23的deployment。</p>
+
+<p>当需要发布新的版本时，增加一组标签为 app:sso 和 version: v2019.6.24的deployment。</p>
+
+<p>然后，更新SVC的version标签值为 v2019.6.24，从流量全部切换到新的deployment。如果需要保留老版本，可以不删除老的deployment。<br />
+回滚：将SVC的version标签改为老标签<br />
+特点： SVC改变，deployment也要改变。流量版本切换是整体切换,无流量控制</p>
+
+<h3 id="灰度更新">灰度更新</h3>
+
+<h4 id="优点-3">优点</h4>
+
+<pre><code>1.部分用户获取新版本
+2.方便错误和性能监控  
+3.快速回滚  
+</code></pre>
+
+<h4 id="缺点-3">缺点</h4>
+
+<pre><code>1.发布较慢
+2.流量精准控制,但资源很浪费（99％A / 1％B = 99 Pod A，1 Pod B）  
+</code></pre>
+
+<p>在服务网格的帮助下，灰度更新可用更好的支持多版本路由与流量切换</p>
+
+<h5 id="如果你对新功能的发布没有信心-建议使用金丝雀发布的策略">如果你对新功能的发布没有信心，建议使用金丝雀发布的策略</h5>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/" data-toggle="tooltip" data-placement="top" title="ServiceMesh流量走向">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/" data-toggle="tooltip" data-placement="top" title="升级kubernetes到1.15">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/">ServiceMesh流量走向</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%BC%80%E5%90%AFhttp2/">Nginx开启http2</a></li>
+                    
+                    <li><a href="/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">zk在k8s中的部署</a></li>
+                    
+                    <li><a href="/posts/devops/kubernetes%E5%A2%9E%E5%8A%A0%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9/">kubernetes增加计算节点</a></li>
+                    
+                    <li><a href="/posts/devops/k8s-nfs/">k8s上使用nfs</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jun 24, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/kubernetes/">kubernetes</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

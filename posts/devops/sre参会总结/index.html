@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>Google SRE 参会总结 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="SRE会议记录">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/sre%E5%8F%82%E4%BC%9A%E6%80%BB%E7%BB%93/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/sre%E5%8F%82%E4%BC%9A%E6%80%BB%E7%BB%93/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">Google SRE 参会总结</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Mar 14, 2017</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <blockquote>
+<p>内容为转发</p>
+</blockquote>
+
+<ul>
+<li>近期有幸参加了一个小型的运维会议，同《SRE：Google 运维解密》的译者进行面对面的沟通，收益匪浅。会议上大家的讨论非常热烈，话题主要集中在以下几个方面：</li>
+</ul>
+
+<p>什么是SRE，职责是什么？</p>
+
+<p>SRE全称Site Reliability Engineering，是Google内部的一个运维职位，主要职责是保障服务的可靠性和性能，同时负责数据中心资源分配，为重要服务预留资源，该职位不负责某个具体业务的上线和部署。</p>
+
+<p>SRE分为产品SRE和平台SRE。产品SRE负责某个具体产品相关的所有组件的运维，而平台SRE则负责诸如主机计算能力，数据库资源等PaaS资源。按照我个人的简单理解，前者是以业务为单位的纵深管理，后者是以平台为基础的横向管理。不论何种SRE，在我看来，这个职位都对个人能力有较高的要求，非传说中的全栈工程师莫属。</p>
+
+<hr />
+
+<p>SRE和开发如何分工协作</p>
+
+<p>首先，SRE和开发仅仅只是两个不同的职位，并非某种能力的划分，两者之间可能会存在转换。比如某个产品上线之前没有设置专门的SRE，上线之后为了满足业务需要，从之前的开发人员中选择合适的人担任SRE。</p>
+
+<p>其次，SRE和开发在产品的各个生命周期都可能存在合作。比如产品的设计阶段，需要SRE介入协助进行高可用架构设计；产品交付阶段，又可能需要开发人员配合SRE进行一些故障的分析和诊断。</p>
+
+<hr />
+
+<p>开发和运维相互之间的职责如何界定</p>
+
+<p>在国内，开发和运维相互扯皮是一个永恒的话题，那么Google是怎么应对的呢？</p>
+
+<p>在Google内部有一个非常好的规则——对事不对人。出了问题，首先想到的不是谁来承担责任，而是大家坐在一起想办法解决问题。他们会尽可能找出问题的root cause，尝试从规则上、流程上杜绝类似问题的再次发生。而Google也不会由于一个具体的case开除员工，当然，如果屡教不改总是犯低级错误，或者工作态度有问题的不在此范围内。</p>
+
+<p>个人觉得这是非常好的一个制度，能够消除面对某个具体问题时，由于可能承担的责任问题，把彼此放在了对立面。毕竟问题已经出了，快速的组织善后工作，从根本上解决问题避免再次发生，才是正确的方向。</p>
+
+<p>当然，一团和气是干不好革命工作的，必要的工作界面划分还是有必要的。不论是开发还是SRE，提供的都是有限责任，就是说我的服务是有边界的，不是任何问题都需要负责。</p>
+
+<p>比如我是一个数据库平台的SRE，某个产品使用了该平台上的数据库，开发人员写了个非常消耗资源的SQL语句，导致整个系统夯死。那么这个问题的责任如何界定呢？</p>
+
+<p>其实,早在业务部门选择这个数据库平台的时候，就已经被告知能够提供哪些服务，比如我的平台能够提供多少计算能力、多少IO能力，超出能力之外的要求概不负责。所以我们举的这个例子，实际上在Google通常不会发生。因为代码中会有相应的检测机制，超出服务能力的请求会被无条件干掉。不像我们在运维的时候，找出问题SQL后可怜巴巴的到处问是谁的SQL，能不能杀掉。可能在犹豫的这段时间，会因为这条SQL消耗过多的资源导致更大的问题出现。</p>
+
+<p>因此，Google的解决方案是牺牲个体，保护全局。而这套规则SRE早就告诉了业务平台，出现了问题，只能是业务部分自己想办法处理。这是界面划分杜绝扯皮的又一法门，所谓的阳谋，大概就是如此。</p>
+
+<p>为什么这套规则，在国内比较难以落地?</p>
+
+<p>这段会上并没有深入讨论，纯属个人推断。为什么国内没有形成这样的制度，开发运维各自为政呢？个人觉得有两点原因：</p>
+
+<p>国内不论是底层基础架构还是上层应用软件，基本都是成熟的商业软件，比如Oracle Database、IBM Middleware，开发和运维分别因为某一个项目连接在一起，缺少前期沟通和磨合时间。类似于古时候的包办婚姻，双方缺少感情基础。</p>
+
+<p>开发主要专注于业务逻辑的实现，缺少稳定性和性能方面的考虑，导致系统上线后出现各种奇葩问题。但由于对基础架构不了解，只能依赖于运维方面解决问题，长此以往，形成了运维“无限责任制”。</p>
+
+<p>从这两个层面看，也能理解为什么DevOps近来才火热起来，而且是从互联网公司开始火的，因为互联网公司是自己开发做产品，开发和运维的联系天然比较紧密。传统公司随着业务定制化的增多，运维“无限责任制”又导致各种矛盾不断激化，DevOps需求也就越来越迫切。</p>
+
+<p>以上只是通过会议上大家的讨论，加上个人理解而成，纰漏在所难免，如有不对的地方，还望指正。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/varnish%E6%9B%BF%E6%8D%A2squid%E7%9A%84%E5%8E%9F%E5%9B%A0/" data-toggle="tooltip" data-placement="top" title="varnish替换squid的原因">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7%E6%9D%83%E9%99%90%E5%B1%9E%E6%80%A7/" data-toggle="tooltip" data-placement="top" title="linux文件系统高级权限属性">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/varnish%E6%9B%BF%E6%8D%A2squid%E7%9A%84%E5%8E%9F%E5%9B%A0/">varnish替换squid的原因</a></li>
+                    
+                    <li><a href="/posts/devops/%E6%99%AE%E7%BD%97%E7%B1%B3%E4%BF%AE%E6%96%AF%E7%9B%91%E6%8E%A7/">普罗米修斯监控</a></li>
+                    
+                    <li><a href="/posts/devops/%E5%A4%8D%E4%B9%A0-12factor%E6%96%B9%E6%B3%95%E8%AE%BA/">复习-12Factor方法论</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Mar 14, 2017</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>性能调优 on 服务器维护</title>
+    <link>https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/</link>
+    <description>Recent content in 性能调优 on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Wed, 05 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>zk在k8s中的部署</title>
+      <link>https://www.netmesh.cn/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/</link>
+      <pubDate>Wed, 05 Jun 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/</guid>
+      <description>&lt;p&gt;ZooKeeper 基础
+Apache ZooKeeper是一个分布式的开源协调服务，用于分布式系统。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>去域名-加速你的移动APP访问</title>
+      <link>https://www.netmesh.cn/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/</link>
+      <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/</guid>
+      <description>&lt;p&gt;目前市面上很多移动端加速产品。但是都是基于sdk这种，然后劫持请求回边缘CDN节点。做链路加速，这种产品在一定程度并不能加速你的移动app。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>微服务部署方案对比</title>
+      <link>https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/</link>
+      <pubDate>Fri, 31 May 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/</guid>
+      <description>&lt;p&gt;目前有很多用于部署的技术，有的简单、有的复杂、有的得停机、有的不需要停机即可完成部署。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>优化nginx静态资源</title>
+      <link>https://www.netmesh.cn/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/</link>
+      <pubDate>Fri, 26 Oct 2018 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/</guid>
+      <description>&lt;p&gt;通过对一些静态资源简单的设置，例如设置静态资源的过期时间、以及压缩，可以减少网站的加载时间，同时也能减少服务器的带宽。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>varnish替换squid的原因</title>
+      <link>https://www.netmesh.cn/posts/devops/varnish%E6%9B%BF%E6%8D%A2squid%E7%9A%84%E5%8E%9F%E5%9B%A0/</link>
+      <pubDate>Thu, 25 Jul 2013 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/devops/varnish%E6%9B%BF%E6%8D%A2squid%E7%9A%84%E5%8E%9F%E5%9B%A0/</guid>
+      <description>&lt;p&gt;varnish替代squid的主要原因是因为squid不支持多核cpu，以及一些对象清理的问题。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

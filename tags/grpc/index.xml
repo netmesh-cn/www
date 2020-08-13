@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Grpc on 服务器维护</title>
+    <link>https://www.netmesh.cn/tags/grpc/</link>
+    <description>Recent content in Grpc on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Tue, 18 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Grpc在kubernetes集群中的负载均衡</title>
+      <link>https://www.netmesh.cn/posts/k8s/grpc%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Tue, 18 Jun 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/grpc%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description>&lt;p&gt;很多人觉得，在Kubernetes中不是只要用 Service就可以做负载均衡了吗？SVC确实有负载均衡的作用。它是由Kube-proxy提供，但是由于Grpc的特性没有办法让它很好的处理负载均衡。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

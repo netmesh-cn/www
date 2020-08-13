@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>容器中Nginx日志的切割滚动 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="容器中Nginx日志的切割滚动方法">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84nginx%E6%97%A5%E5%BF%97%E6%BB%9A%E5%8A%A8/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84nginx%E6%97%A5%E5%BF%97%E6%BB%9A%E5%8A%A8/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">容器中Nginx日志的切割滚动</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jul 8, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>无论是对于系统还是对于应用而言，日志是一个极其重要的部分，在出现问题需要追踪的时候，日志文件就发挥它的价值了。<br />
+通常日志信息会保存在文件中，显然随着时间的推移，日志文件文件体积会变成很大、记录时间跨度也变得很大。<br />
+如果需要打开日志追溯问题时变得异常困难，所以我们需要对我们的日志进行管理，通过某种策略对日志进行分割以降低日志文件的体积和跨度。</p>
+
+<p>logrotate就是这样的一个工具。</p>
+
+<p>对于系统日志而言，并没有做这样的策略。对于应用而已，我们会要求开发者将日志写入到以时间命令的日志文件中。</p>
+
+<p>一个日志文件保存一天时间的日志，这是一种比较方便快捷的方式。</p>
+
+<p>我们一般在容器中的nginx日志会通过卷的方式挂载在宿主机上，日志也会随着时间推移变的越来越大。</p>
+
+<p>我们将在宿主机上进行日志切割容器中的nginx日志。</p>
+
+<p>logrotate命令
+linux系统默认安装了logrotate的工具。</p>
+
+<pre><code># docker exec web logrotate -v
+logrotate 3.7.4 - Copyright (C) 1995-2001 Red Hat, Inc.
+This may be freely redistributed under the terms of the GNU Public License
+
+Usage: logrotate [-dfv?] [-d|--debug] [-f|--force] [-m|--mail command]
+        [-s|--state statefile] [-v|--verbose] [-?|--help] [--usage]
+        [OPTION...] &lt;configfile&gt;
+</code></pre>
+
+<p>我们在容器里面定义的切割规则为：</p>
+
+<pre><code># cat /etc/logrotate.d/nginx
+/data/logs/*.log {  #表示nginx日志存储路径
+daily   #指定转储周期为每天
+rotate 5    #指定日志文件删除之前转储的次数，0 指没有备份，5 指保留5 个备份
+missingok   #如果日志丢失，不报错继续滚动下一个日志
+notifempty  #当日志文件为空时，不进行轮转
+sharedscripts   #运行postrotate脚本，作用是在所有日志都轮转后统一执行一次脚本。
+                #如果没有配置这个，那么每个日志轮转后都会执行一次脚本
+dateext     #使用当期日期作为命名格式
+postrotate  #在logrotate转储之后需要执行的指令，例如重新启动 (kill -HUP) 某个服务！必须独立成行
+    if [ -f /opt/nginx/logs/nginx.pid ]; then
+        kill -USR1 `cat /opt/nginx/logs/nginx.pid`
+    fi
+endscript   #postrotate结束标识符
+}
+</code></pre>
+
+<p>然后在容器里面定义切割脚本：</p>
+
+<pre><code class="language-bash">[root@容器 ~]# cat log.sh
+#!/bin/bash
+/usr/sbin/logrotate -f /etc/logrotate.d/nginx
+</code></pre>
+
+<p>然后在宿主机定义crontab定时任务：</p>
+
+<pre><code class="language-bash"># m h  dom mon dow   command
+1	0	*	*	*	sh /root/cron/log.sh
+root@宿主机:~# cat ~/cron/log.sh
+#!/bin/bash
+docker exec web &quot;/root/log.sh&quot;
+</code></pre>
+
+<p>这样就完成了容器中nginx日志的切割滚动！</p>
+
+<p>logrotate配置文件参数</p>
+
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>说明</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>compress</td>
+<td>通过gzip 压缩转储以后的日志</td>
+</tr>
+
+<tr>
+<td>nocompress</td>
+<td>不做gzip压缩处理</td>
+</tr>
+
+<tr>
+<td>copytruncate</td>
+<td>用于还在打开中的日志文件，把当前日志备份并截断；是先拷贝再清空的方式，拷贝和清空之间有一个时间差，可能会丢失部分日志数据。</td>
+</tr>
+
+<tr>
+<td>nocopytruncate</td>
+<td>备份日志文件不过不截断</td>
+</tr>
+
+<tr>
+<td>create mode owner group</td>
+<td>轮转时指定创建新文件的属性，如create 0777 nobody nobody</td>
+</tr>
+
+<tr>
+<td>nocreate</td>
+<td>不建立新的日志文件</td>
+</tr>
+
+<tr>
+<td>delaycompress</td>
+<td>和compress 一起使用时，转储的日志文件到下一次转储时才压缩</td>
+</tr>
+
+<tr>
+<td>nodelaycompress</td>
+<td>覆盖 delaycompress 选项，转储同时压缩。</td>
+</tr>
+
+<tr>
+<td>missingok</td>
+<td>如果日志丢失，不报错继续滚动下一个日志</td>
+</tr>
+
+<tr>
+<td>errors address</td>
+<td>专储时的错误信息发送到指定的Email 地址</td>
+</tr>
+
+<tr>
+<td>ifempty</td>
+<td>即使日志文件为空文件也做轮转，这个是logrotate的缺省选项。</td>
+</tr>
+
+<tr>
+<td>notifempty</td>
+<td>当日志文件为空时，不进行轮转</td>
+</tr>
+
+<tr>
+<td>mail address</td>
+<td>把转储的日志文件发送到指定的E-mail 地址</td>
+</tr>
+
+<tr>
+<td>nomail</td>
+<td>转储时不发送日志文件</td>
+</tr>
+
+<tr>
+<td>olddir directory</td>
+<td>转储后的日志文件放入指定的目录，必须和当前日志文件在同一个文件系统</td>
+</tr>
+
+<tr>
+<td>noolddir</td>
+<td>转储后的日志文件和当前日志文件放在同一个目录下</td>
+</tr>
+
+<tr>
+<td>sharedscripts</td>
+<td>运行postrotate脚本，作用是在所有日志都轮转后统一执行一次脚本。如果没有配置这个，那么每个日志轮转后都会执行一次脚本</td>
+</tr>
+
+<tr>
+<td>prerotate</td>
+<td>在logrotate转储之前需要执行的指令，例如修改文件的属性等动作；必须独立成行</td>
+</tr>
+
+<tr>
+<td>postrotate</td>
+<td>在logrotate转储之后需要执行的指令，例如重新启动 (kill -HUP) 某个服务！必须独立成行</td>
+</tr>
+
+<tr>
+<td>daily</td>
+<td>指定转储周期为每天</td>
+</tr>
+
+<tr>
+<td>weekly</td>
+<td>指定转储周期为每周</td>
+</tr>
+
+<tr>
+<td>monthly</td>
+<td>指定转储周期为每月</td>
+</tr>
+
+<tr>
+<td>rotate count</td>
+<td>指定日志文件删除之前转储的次数，0 指没有备份，5 指保留5 个备份</td>
+</tr>
+
+<tr>
+<td>dateext</td>
+<td>使用当期日期作为命名格式</td>
+</tr>
+
+<tr>
+<td>dateformat .%s</td>
+<td>配合dateext使用，紧跟在下一行出现，定义文件切割后的文件名，必须配合dateext使用，只支持 %Y %m %d %s 这四个参数</td>
+</tr>
+
+<tr>
+<td>size(或minsize) log-size</td>
+<td>当日志文件到达指定的大小时才转储，log-size能指定bytes(缺省)及KB (sizek)或MB(sizem).当日志文件 &gt;= log-size 的时候就转储。 以下为合法格式：（其他格式的单位大小写没有试过）size = 5 或 size 5 （&gt;= 5 个字节就转储）size = 100k 或 size 100k size = 100M 或 size 100M</td>
+</tr>
+</tbody>
+</table>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/" data-toggle="tooltip" data-placement="top" title="升级kubernetes到1.15">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/k8s/aws%E4%B8%8Aebs%E4%BD%BF%E7%94%A8/" data-toggle="tooltip" data-placement="top" title="EKS集群中使用EBS做卷">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/k8s/k8s%E5%8D%87%E7%BA%A7%E5%88%B01.15/">升级kubernetes到1.15</a></li>
+                    
+                    <li><a href="/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/">Kubernetes发布策略</a></li>
+                    
+                    <li><a href="/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/">ServiceMesh流量走向</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%BC%80%E5%90%AFhttp2/">Nginx开启http2</a></li>
+                    
+                    <li><a href="/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">zk在k8s中的部署</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Jul 8, 2019</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

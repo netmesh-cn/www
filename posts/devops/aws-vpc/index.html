@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>aws-vpc简介 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="aws云中vpc的概念详细介绍">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/aws-vpc/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/aws-vpc/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">aws-vpc简介</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Mar 28, 2019</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>Amazon VPC (Virtual Private Cloud) 是AWS的网络基础设施。使用VPC服务可以在AWS中创建一个独立隔离的网络，在这个隔离的网络空间中可以创建任何AWS资源，例如EC2、Redis、RDS数据库等等，VPC网络使这些AWS资源互相连接，传递数据，并且提供外网访问的网关。</p>
+
+<p>VPC和子网(Subnet)
+当新建一个VPC，需要为虚拟网络定义IP地址范围作为CIDR地址，例如CIDR为10.1.0.0/16。IPv4的CIDR可以手动指定，但是IPv6的CIDR只能由AWS自动分配。</p>
+
+<p>CIDR（无类别域间路由，Classless Inter-Domain Routing）将IP地址按照前缀分成一组，使用一种无类别的域际路由选择算法，大大减少了路由表维护的条目数。</p>
+
+<p>VPC的IP地址段可以进一步划分IP段，从而创建子网(Subnet)。一个VPC横跨多个可用区(Availability Zone)，但是一个子网只能位于一个可用区里面。</p>
+
+<p>创建EC2、RDS等AWS资源的时候，除了要选择VPC，还要选择创建到VPC的哪个子网里面。EC2会被自动分配一个所属子网IP段内的私有IP地址，如果想要分配公网IP地址，需要手动指定弹性IP，或者可以配置子网自动为EC2分配公网IP地址。如果想要让EC2被外网访问到，除了需要配置公网IP地址，还需要配置子网的路由表，使其可以通过VPC网关(Internet Gateway)访问外网。</p>
+
+<p>Subnet是一个VPC里面一个IP段. 创建任何AWS资源的时候可以选择一个Subnet。</p>
+
+<p>AWS 以前没有VPC，而是叫做EC2-Classic的网络。2013年之后就支持EC2-VPC了。 对于只支持VPC的新账户，会有一个Default VPC，并且在每个Availability Zone里面都有一个默认的Default Subnet，新账号就默认使用个VPC，而不用自己选择。当然也可以自己创建VPC。</p>
+
+<p>Default VPC 里面默认配置了网关(Internet Gateway)，而且配置好了到网关的路由，每个Default Subnet里面的EC2都默认分配私有IP和公网IP。因此Default Subnet里面的EC2都是可以外网访问的。</p>
+
+<p>Internet Gateway和Route Table<br />
+VPC是一个独立的虚拟的网络，与AWS其它的VPC、与外网都是隔离开得。如果想要让外网访问VPC里面的EC2，必须通过网关（Internet Gateway）。网关是VPC连接外网的组件，可以为VPC分配多个网关，每个网关都有唯一的ID，例如igw-8727e8e2。配置路由表的时候，网关ID作为路由表的目标地址（target）。</p>
+
+<p>如果只想让instance主动访问外网，不想让外网主动访问instance。IPv4可以使用NAT，IPv6可以使用Egress-Only Internet Gateways。</p>
+
+<p>VPC里面的Subnet都关联了一张路由表(Route Table)，路由表定义了VPC网络里面的网络流量的传输路径。</p>
+
+<p>每个VPC创建之后都自动配置了一个路由表，这种关联在VPC上的路由表叫做主路由表(Main Route Table)。主路由表不能删除，但是可以替换为别的路由表。 每个Subnet创建之后默认使用主路由表，但是可以为Subnet创建一个自定义路由表(Custom Route Table)来设置特定路由规则。自定义路由表可以删除，删除之后就使用VPC的主路由表。</p>
+
+<p>e.g. 一个使用主路由表的例子<br />
+Default VPC</p>
+
+<p><img src="/img/aws_vpc_subnets.png" alt="vpc" /></p>
+
+<p>在上面这个例子中，VPC的网段为10.1.0.0/16，里面有两个子网：10.1.1.0/24和10.1.2.0/24。这两个子网没有自定义路由表，因此都使用VPC的主路由表。</p>
+
+<p>主路由表中有两条路由规则：</p>
+
+<p>destination为10.1.0.0/16表示VPC内部的流量，因为VPC网段下的所有IP地址都是10.1开头。这些流量的target是local，表示内部之间通信。
+destination为0.0.0.0/0表示访问外网IP的流量，这些流量通过target指定ID的Internet Gateway访问外网。
+Security Group
+安全组（Security Group）定义了防火墙规则，包括出站规则和入站规则，可以细化到哪个IP段可以访问哪个端口。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/secrity/mirai/" data-toggle="tooltip" data-placement="top" title="僵尸网络 Mirai 新变种来袭，企业成新目标">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/" data-toggle="tooltip" data-placement="top" title="基于TLS1.3的微信安全通信协议mmtls介绍">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/%E5%BC%80%E6%BA%90apm%E4%B8%9A%E5%8A%A1%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">开源APM业务性能剖析系统架构 </a></li>
+                    
+                    <li><a href="/posts/devops/%E4%BC%81%E4%B8%9A%E7%A7%81%E6%9C%89harbor%E4%BB%93%E5%BA%93/">企业私有Harbor仓库</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/">优化nginx静态资源</a></li>
+                    
+                    <li><a href="/posts/devops/linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7%E6%9D%83%E9%99%90%E5%B1%9E%E6%80%A7/">linux文件系统高级权限属性</a></li>
+                    
+                    <li><a href="/posts/devops/sre%E5%8F%82%E4%BC%9A%E6%80%BB%E7%BB%93/">Google SRE 参会总结</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Mar 28, 2019</h4>
+    </section>
+    <h5 id="wc">100 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

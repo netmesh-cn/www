@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>secrity on 服务器维护</title>
+    <link>https://blog.sklinux.com/categories/secrity/</link>
+    <description>Recent content in secrity on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Thu, 16 May 2019 10:58:18 +0800</lastBuildDate>
+    
+	<atom:link href="https://blog.sklinux.com/categories/secrity/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>基于TLS1.3的微信安全通信协议mmtls介绍</title>
+      <link>https://blog.sklinux.com/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Thu, 16 May 2019 10:58:18 +0800</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://blog.sklinux.com/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/</guid>
+      <description>&lt;p&gt;　　随着近些年网络安全事情的频繁发生，使得用户对网络通信安全的意识越来越强。国内外的网络服务提供商都逐渐提供全站的安全通信服务，如国内的淘宝、百度先后宣布已经完成了全站部署https。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

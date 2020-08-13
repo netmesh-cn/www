@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Istio on 服务器维护</title>
+    <link>https://www.netmesh.cn/tags/istio/</link>
+    <description>Recent content in Istio on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Tue, 18 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/tags/istio/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Grpc在kubernetes集群中的负载均衡</title>
+      <link>https://www.netmesh.cn/posts/k8s/grpc%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Tue, 18 Jun 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/grpc%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description>&lt;p&gt;很多人觉得，在Kubernetes中不是只要用 Service就可以做负载均衡了吗？SVC确实有负载均衡的作用。它是由Kube-proxy提供，但是由于Grpc的特性没有办法让它很好的处理负载均衡。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>istio-ingress-sds的一些障碍绕行方法</title>
+      <link>https://www.netmesh.cn/posts/k8s/istio-ingress-sds%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%9C%E7%A2%8D%E7%BB%95%E8%A1%8C%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/istio-ingress-sds%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%9C%E7%A2%8D%E7%BB%95%E8%A1%8C%E6%96%B9%E6%B3%95/</guid>
+      <description>&lt;p&gt;1.通过官网的by step 使用ingress-gateway发布ssl始终不成功，但是ingress-gateway的http服务暴露ok。&lt;/p&gt;
+
+&lt;p&gt;2.决定使用曲线救援方法，在外侧通过nginx来发布tls，内部回源使用http，但是遇见了http 426的错误。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>istio服务网格生产环境ingress网关部署SSL实战</title>
+      <link>https://www.netmesh.cn/posts/k8s/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC%E5%AE%9E%E6%88%98%E4%B9%8Bssl%E6%9C%8D%E5%8A%A1%E5%8F%91%E5%B8%83/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC%E5%AE%9E%E6%88%98%E4%B9%8Bssl%E6%9C%8D%E5%8A%A1%E5%8F%91%E5%B8%83/</guid>
+      <description>&lt;h2 id=&#34;服务网格实战之ssl服务发布&#34;&gt;服务网格实战之SSL服务发布&lt;/h2&gt;
+
+&lt;p&gt;在生产环境将Istio做完Ingress Gateway的时候，要将SSL部署的情况。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

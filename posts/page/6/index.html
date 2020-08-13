@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>Posts - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  <header class="header-section ">
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="page-heading">
+              <h1>Posts</h1>
+              <hr class="small">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  
+  <div class="container" role="main">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <div class="posts-list">
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/mysql/mysql-5.7%E5%AF%86%E7%A0%81/">
+                <h2 class="post-title">mysql-5.7密码</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 31, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>mysql5.7后，默认会初始化一个随机密码在日志文件中。</p>
+                  <a href="https://www.netmesh.cn/posts/mysql/mysql-5.7%E5%AF%86%E7%A0%81/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+                  
+                    #<a href="https://www.netmesh.cn/tags/mysql/">Mysql</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/">
+                <h2 class="post-title">去域名-加速你的移动APP访问</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 31, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>目前市面上很多移动端加速产品。但是都是基于sdk这种，然后劫持请求回边缘CDN节点。做链路加速，这种产品在一定程度并不能加速你的移动app。</p>
+                  <a href="https://www.netmesh.cn/posts/devops/%E5%8E%BB%E5%9F%9F%E5%90%8D%E5%8C%96%E5%8A%A0%E9%80%9F%E4%BD%A0%E7%9A%84%E7%A7%BB%E5%8A%A8app%E8%AE%BF%E9%97%AE/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">性能调优</a>&nbsp;
+                  
+                    #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/">
+                <h2 class="post-title">微服务部署方案对比</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 31, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>目前有很多用于部署的技术，有的简单、有的复杂、有的得停机、有的不需要停机即可完成部署。</p>
+                  <a href="https://www.netmesh.cn/posts/devops/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+                  
+                    #<a href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">性能调优</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/k8s/istio-ingress-sds%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%9C%E7%A2%8D%E7%BB%95%E8%A1%8C%E6%96%B9%E6%B3%95/">
+                <h2 class="post-title">istio-ingress-sds的一些障碍绕行方法</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 28, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>1.通过官网的by step 使用ingress-gateway发布ssl始终不成功，但是ingress-gateway的http服务暴露ok。</p>
+
+<p>2.决定使用曲线救援方法，在外侧通过nginx来发布tls，内部回源使用http，但是遇见了http 426的错误。</p>
+                  <a href="https://www.netmesh.cn/posts/k8s/istio-ingress-sds%E7%9A%84%E4%B8%80%E4%BA%9B%E9%9A%9C%E7%A2%8D%E7%BB%95%E8%A1%8C%E6%96%B9%E6%B3%95/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/istio/">istio</a>&nbsp;
+                  
+                    #<a href="https://www.netmesh.cn/tags/ingress/">ingress</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/k8s/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC%E5%AE%9E%E6%88%98%E4%B9%8Bssl%E6%9C%8D%E5%8A%A1%E5%8F%91%E5%B8%83/">
+                <h2 class="post-title">istio服务网格生产环境ingress网关部署SSL实战</h2>
+
+                
+                  <h3 class="post-subtitle">
+                    ingress gateway ssl
+                  </h3>
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 28, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <h2 id="服务网格实战之ssl服务发布">服务网格实战之SSL服务发布</h2>
+
+<p>在生产环境将Istio做完Ingress Gateway的时候，要将SSL部署的情况。</p>
+                  <a href="https://www.netmesh.cn/posts/k8s/%E6%9C%8D%E5%8A%A1%E7%BD%91%E6%A0%BC%E5%AE%9E%E6%88%98%E4%B9%8Bssl%E6%9C%8D%E5%8A%A1%E5%8F%91%E5%B8%83/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/istio/">istio</a>&nbsp;
+                  
+                    #<a href="https://www.netmesh.cn/tags/ingress/">ingress</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/">
+                <h2 class="post-title">业务范围</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 28, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>根据客户的不同需求，为客户提供以下IT外包服务：<br />
+1.IT资源整体外包：为客户提供全套的IT系统规划、采购、实施、运维、咨询、培训的整体服务，适用于不想成立IT部门或雇用IT工程师，并迫切希望降低运营成本的公司。</p>
+
+<p>2.单项IT技术外包服务：也许您的公司有少量的计算机人员，难以应付日常的各种繁杂事务，可以把您觉得棘手的事情交给我们，如网络建设，硬件设备维护，单项软件开发，我们可以按项目，时间，设备量等各种方式计费，提供服务。</p>
+
+<p>3.维护外包：当系统已经建设好，维护人员日常工作不多，有了问题时又忙不过来，我们可以提供随机的维护外包服务，作为我们的客户，您在遇到问题时可以享受到团队技术力量的服务，保障已建系统的正常运行。</p>
+
+<p>4.IT行业信息咨询：目的是帮助客户找到正确的价格比并及时、准确了解IT行业前沿技术动态；系统解决方案，目的是根据企业网络实际情况及时、有效提出合理的优化、升级方案书，使企业网络系统总是处于最佳状态。</p>
+                  <a href="https://www.netmesh.cn/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/">业务范围</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/k8s/k8s/">
+                <h2 class="post-title">K8S 1.14安装</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 27, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>手工安装kubernetes1.14集群<br />
+事前准备：<br />
+1.关闭所有节点的swap<br />
+2.关闭防火墙<br />
+3.如果存在selinux请关闭</p>
+                  <a href="https://www.netmesh.cn/posts/k8s/k8s/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/">
+                <h2 class="post-title">基于TLS1.3的微信安全通信协议mmtls介绍</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 May 16, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>　　随着近些年网络安全事情的频繁发生，使得用户对网络通信安全的意识越来越强。国内外的网络服务提供商都逐渐提供全站的安全通信服务，如国内的淘宝、百度先后宣布已经完成了全站部署https。</p>
+                  <a href="https://www.netmesh.cn/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/devops/aws-vpc/">
+                <h2 class="post-title">aws-vpc简介</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 March 28, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>Amazon VPC (Virtual Private Cloud) 是AWS的网络基础设施。使用VPC服务可以在AWS中创建一个独立隔离的网络，在这个隔离的网络空间中可以创建任何AWS资源，例如EC2、Redis、RDS数据库等等，VPC网络使这些AWS资源互相连接，传递数据，并且提供外网访问的网关。</p>
+                  <a href="https://www.netmesh.cn/posts/devops/aws-vpc/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+            <article class="post-preview">
+              <a href="https://www.netmesh.cn/posts/secrity/mirai/">
+                <h2 class="post-title">僵尸网络 Mirai 新变种来袭，企业成新目标</h2>
+
+                
+              </a>
+
+              <p class="post-meta">
+                发表于 March 26, 2019
+              </p>
+              <div class="post-entry">
+                
+                  <p>臭名昭著的 IoT/Linux 僵尸网络 Mirai 出现新变种，杀伤力更强。</p>
+                  <a href="https://www.netmesh.cn/posts/secrity/mirai/" class="post-read-more">[阅读全文]</a>
+                
+              </div>
+
+              
+                <span class="post-meta">
+                  
+                    #<a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a>&nbsp;
+                  
+                </span>
+              
+
+            </article>
+          
+        </div>
+        
+          <ul class="pager main-pager">
+            
+              <li class="previous">
+                <a href="/posts/page/5">&larr; 上一页</a>
+              </li>
+            
+            
+              <li class="next">
+                <a href="/posts/page/7">下一页 &rarr;</a>
+              </li>
+            
+          </ul>
+        
+      </div>
+    <div align="center" class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+
+<ul class="pagination">
+    
+    <li class="page-item">
+        <a href="/posts/" class="page-link" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
+    </li>
+    
+    <li class="page-item">
+    <a href="/posts/page/5/" class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+    </li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/">1</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/page/2/">2</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/page/3/">3</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item disabled"><span aria-hidden="true">&nbsp;&hellip;&nbsp;</span></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/page/5/">5</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item active"><a class="page-link" href="/posts/page/6/">6</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/page/7/">7</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/posts/page/8/">8</a></li>
+    
+    
+    <li class="page-item">
+    <a href="/posts/page/7/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+    </li>
+    
+    <li class="page-item">
+        <a href="/posts/page/8/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    </li>
+    
+</ul>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

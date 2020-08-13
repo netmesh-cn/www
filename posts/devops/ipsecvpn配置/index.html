@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>ipsecVPN - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="阿里云服务器维护">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/ipsecvpn%E9%85%8D%E7%BD%AE/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/ipsecvpn%E9%85%8D%E7%BD%AE/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">ipsecVPN</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Jul 28, 2020</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/">服务器维护</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>ipsec穿越运营商网络，siteA-to-siteB的ipsecVPN配置。</p>
+
+<h4 id="ipsec基础知识">ipsec基础知识</h4>
+
+<p>工作于TCP/IP第三层IP层上网络数据安全地一整套体系结构。<br />
+包括网络认证协议AH（Authentication Header，认证头）、ESP（Encapsulating Security Payload，封装安全载荷）、IKE（Internet Key Exchange，因特网密钥交换又称isakmp）和用于网络认证及加密的一些算法等。<br />
+其中，AH协议和ESP协议用于提供安全服务，IKE协议用于密钥交换。</p>
+
+<p>整个IPSec VPN地实现基本简化为两个SA协商完成：</p>
+
+<h5 id="sa">SA</h5>
+
+<p>SA（security association）：是两个通信实体经协商建立起来地一种协议，它们决定了用来保护数据包安全地IPsec协议，转码方式，密钥，以及密钥地有效存在时间等等。</p>
+
+<h5 id="ike-sa">IKE SA</h5>
+
+<p>IKE（isakmp）SA：协商对IKE数据流进行加密以及对对等体进行验证地算法（对密钥地加密和peer地认证）对等体之间只能存在一个。</p>
+
+<p>第一阶段：建立ISAKMPSA协商的是以下信息：<br />
+1、对等体之间采用何种方式做认证，是预共享密钥还是数字证书。<br />
+2、双方使用哪种加密算法（DES、3DES）<br />
+3、双方使用哪种HMAC方式，是MD5还是SHA<br />
+4、双方使用哪种Diffie-Hellman密钥组<br />
+5、使用哪种协商模式（主模式或主动模式）<br />
+6、协商SA的生存期<br />
+IPSec SA：协商对对等体之间地IP数据流进行加密地算法 对等体之间可以存在多个</p>
+
+<p>第二阶段：建立IPsecSA协商的是以下信息：<br />
+1、双方使用哪种封装技术，AH还是ESP<br />
+2、双方使用哪种加密算法<br />
+3、双方使用哪种HMAC方式，是MD5还是SHA<br />
+4、使用哪种传输模式，是隧道模式还是传输模式<br />
+5、协商SA的生存期</p>
+
+<p>本次实验top图如下：
+<img src="/img/ipsecvpn.png" alt="ipsecVPN" /></p>
+
+<p>R1</p>
+
+<pre><code class="language-bash">conf t
+int e0/0
+ip addr 10.0.12.1 255.255.255.0
+no sh
+int e0/1
+ip addr 10.0.13.1 255.255.255.0
+no sh
+ip lo0
+ip addr 1.1.1.1 255.255.255.255
+
+</code></pre>
+
+<p>R2:</p>
+
+<pre><code class="language-bash">conf t
+interface Ethernet0/0
+ ip address 10.0.12.2 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map SKMAP
+interface Ethernet0/1
+ ip address 192.168.1.254 255.255.255.0
+ ip nat inside
+
+ip nat inside source list 100 interface Ethernet0/0 overload
+access-list 100 deny   ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+#穿越流量拒绝nat
+access-list 100 permit ip any any
+access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255 
+#穿越流量 crypto ipsec-isamp 匹配地址
+crypto isakmp policy 10 #控制层面封装、加密、认证方式、过期时间等信息
+ encr aes
+ hash md5
+ authentication pre-share
+ group 2
+ lifetime 3600
+crypto isakmp key 6 sklinux address 10.0.13.3 #对等体地址
+crypto ipsec transform-set SK esp-aes esp-md5-hmac
+ mode tunnel
+crypto map SKMAP 10 ipsec-isakmp
+ set peer 10.0.13.3
+ set transform-set SK
+ match address 101
+</code></pre>
+
+<p>R3</p>
+
+<pre><code class="language-bash">conf t
+interface Ethernet0/1
+ ip address 192.168.2.254 255.255.255.0
+ ip nat inside
+!
+interface Ethernet0/0
+ ip address 10.0.13.3 255.255.255.0
+ ip nat outside
+ crypto map SKMAP
+ !
+access-list 101 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
+crypto isakmp policy 10
+ encr aes
+ hash md5
+ authentication pre-share
+ group 2
+ lifetime 3600
+crypto isakmp key 6 sklinux address 10.0.12.2
+crypto ipsec transform-set SK esp-aes esp-md5-hmac
+ mode tunnel
+crypto map SKMAP 10 ipsec-isakmp
+ set peer 10.0.12.2
+ set transform-set SK
+ match address 101
+ip nat inside source list 100 interface Ethernet0/0 overload
+ip route 0.0.0.0 0.0.0.0 10.0.13.1
+</code></pre>
+
+<p>R4</p>
+
+<pre><code class="language-bash">conf t
+int e0/0
+ip addr 192.168.1.1 255.255.255.0
+no sh
+exit
+no ip routing
+ip default-gateway 192.168.1.254
+
+</code></pre>
+
+<p>R5</p>
+
+<pre><code class="language-bash">conf t
+int e0/0
+ip addr 192.168.2.1 255.255.255.0
+no sh
+exit
+no ip routing
+ip default-gateway 192.168.2.254
+
+</code></pre>
+
+<h4 id="常用命令">常用命令</h4>
+
+<p>查看管理连接SA状态</p>
+
+<pre><code class="language-bash">show crypto isakmp sa 
+</code></pre>
+
+<p>查看IKE策略</p>
+
+<pre><code class="language-bash">show crypto isakmp policy  
+</code></pre>
+
+<p>查看IPSEC传输集</p>
+
+<pre><code class="language-bash">show crypto ipsec transform-set  
+</code></pre>
+
+<p>查看数据连接SA状态</p>
+
+<pre><code class="language-bash">show crypto ipsec sa  
+</code></pre>
+
+<p>查看crypto map</p>
+
+<pre><code class="language-bash">show crypto map  
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/%E6%89%A9%E5%AE%B9oracle%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97/" data-toggle="tooltip" data-placement="top" title="扩容oracle重做日志大小提升性能">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/k8s%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E4%B8%8E%E9%99%90%E5%88%B6%E8%AE%BE%E5%AE%9A%E8%A7%84%E8%8C%83/" data-toggle="tooltip" data-placement="top" title="k8s资源请求与限制设定规范">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/%E4%BD%BF%E7%94%A8pcq%E4%BC%98%E5%8C%96%E5%AE%A2%E6%88%B7%E7%BD%91%E7%BB%9C%E6%B5%81%E9%87%8F/">使用PCQ优化客户网络流量</a></li>
+                    
+                    <li><a href="/posts/devops/ubuntu%E5%85%B3%E9%97%AD%E5%86%85%E6%A0%B8%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/">ubuntu关闭内核自动更新</a></li>
+                    
+                    <li><a href="/posts/devops/%E6%89%A9%E5%AE%B9oracle%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97/">扩容oracle重做日志大小提升性能</a></li>
+                    
+                    <li><a href="/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/">业务范围</a></li>
+                    
+                    <li><a href="/posts/devops/pod%E5%86%85%E6%A0%B8tcp%E6%A0%88%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9/">pod内核tcp栈相关参数修改</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Jul 28, 2020</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/">服务器维护</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

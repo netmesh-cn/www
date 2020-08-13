@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>动态ARP检测原理及应用 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="在一个局域网中，网络安全可以通过多种方式来实现，而采取DHCP snooping（DHCP 防护）及DAI 检测（ARP 防护）这种技术，保护接入交换机的每个端口，可以让网络更加安全，更加稳定，尽可能的减小中毒范围，不因病毒或木马导致全网的瘫痪。">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/secrity/%E5%8A%A8%E6%80%81arp%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/secrity/%E5%8A%A8%E6%80%81arp%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">动态ARP检测原理及应用</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri Dec 14, 2018</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>在一个局域网中，网络安全可以通过多种方式来实现，而采取DHCP snooping（DHCP 防护）及DAI 检测（ARP 防护）这种技术，保护接入交换机的每个端口，可以让网络更加安全，更加稳定，尽可能的减小中毒范围，不因病毒或木马导致全网的瘫痪。</p>
+
+<p>下面将详细的对这种技术的原理和应用做出解释。
+一、 相关原理及作用</p>
+
+<p>1、 DHCP snooping原理</p>
+
+<p>DHCP Snooping技术是DHCP 安全特性，通过建立和维护DHCP Snooping 绑定表过滤不可信任的DHCP 信息，这些信息是指来自不信任区域的DHCP 信息。DHCP Snooping绑定表包含不信任区域的用户MAC 地址、IP 地址、租用期、VLAN-ID 接口等信息。</p>
+
+<p>当交换机开启了 DHCP-Snooping后，会对DHCP 报文进行“侦听”，并可以从接收到的DHCP Request或DHCP Ack报文中提取并记录IP 地址和MAC 地址信息。另外，DHCP-Snooping 允许将某个物理端口设置为信任端口或不信任端口。信任端口可以正常接收并转发DHCP Offer 报文，而不信任端口会将接收到的DHCP Offer报文丢弃。这样，可以完成交换机对假冒DHCP Server 的屏蔽作用，确保客户端从合法的DHCP Server获取IP 地址。</p>
+
+<p>2、DHCP snooping作用</p>
+
+<p>DHCP snooping的主要作用就是隔绝私接的DHCP server，防止网络因多个DHCPserver 而产生震荡。</p>
+
+<p>DHCP snooping 与交换机DAI 技术的配合，防止ARP 病毒的传播。 建立并维护一张DHCP snooping的“绑定表”，这张表可以通过dhcpack 包中的ip 和mac 地址生成的，也可以通过手工指定。它是后续DAI （Dynamic ARP Inspection）和IP Source Guard 基础。这两种类似的技术，是通过这张表来判定ip 或者mac 地址是否合法，来限制用户连接到网络的。</p>
+
+<p>3、DAI 的原理及作用</p>
+
+<p>DAI 全称为Dynamic ARP Inspection，译为动态ARP 检测。思科 Dynamic ARP Inspection (DAI)在交换机上提供IP 地址和MAC 地址的绑定，并动态建立绑定关系。DAI 以DHCPSnooping 绑定表为基础，对于没有使用DHCP 的服务器个别机器可以采用静态添加ARP access-list实现。</p>
+
+<p>DAI 配置可以针对VLAN ，对于同一VLAN 内的接口即可以开启DAI 也可以关闭。通过DAI 可以控制某个端口的ARP 请求报文数量，来达到防范DoS 攻击的目的。</p>
+
+<p>二、 DHCP snooping及DAI 的应用</p>
+
+<p>1、DHCP snooping的应用</p>
+
+<pre><code>Switch （config ）#ipdhcp snooping
+
+Switch （config ）#ipdhcp snooping vlanid /* vlan id 为vlan 号。
+
+Switch （config-if ）#ipdhcp snooping limit rate number /*dhcp包的转发速率，超过就接口就err-disable ，默认不限制;
+Switch （config-if ）#ipdhcp snooping trust /*这样这个端口就变成了信任端口，信任端口可以正常接收并转发DHCP Offer 报文，不记录ip 和mac 地址的绑定，默认是非信任端口。交换机上联端口必须为trust 端口
+
+Switch#ipdhcp snooping binding mac-addressvlan
+
+idip-address interface interface /*这样可以静态ip 和mac 一个绑定。mac-address 为设备物理地址，ip-address 为设备IP 地址，interface 为设备所接交换机端口号。
+
+Switch
+（config ）#ipdhcp snooping database tftp://
+
+10.1.1.1/dhcp_table /*因为掉电后，这张绑定表就消失了，所以要选择一个保存的地方，ftp 、tftp 、flash 皆可。Dhcp_table为文件名，并且在服务器端也要建立一个相同文件名文件。
+</code></pre>
+
+<p>2、 DAI 的应用</p>
+
+<pre><code>Switch(config)#ipdhcp snooping vlanid /* vlan id 为vlan 号。
+
+Switch(config)#ipdhcp snooping
+
+Switch(config)#iparp inspection vlan id/* 定义对哪些 VLAN 进行 ARP 报文检测 。
+
+Switch(config)#iparp inspection validate
+
+src-macdst-macip-addres s /*对src-mac （源mac 地址）,dst-mac （目标mac 地址）和ip-address （ip 地址）进行检查
+
+Switch(config-if)#iparp inspection limit rate number /* 定义接口每秒 ARP 报文数量。
+
+Switch(config-if)#iparp inspection trust /*信任的接口不检查arp 报文, 默认是检测。上联端口必须设为trust 。
+</code></pre>
+
+<p>三、DHCP Snooping 和DAI 在应用中的问题及解决办法</p>
+
+<p>当一台交换机启用DHCP Snooping 和DAI 时，该交换机的所有下联端口都具备了这种防护功能。但是默认情况下，DCHP 包的检测和ARP 包检测的数值都相对较低，若新接入一台设备，向整个Vlan 发送ARP 包进行查找。这样的话会使交换机端口进入Err-disable 状态。这时，我们就必须要在相应端口更改相应的数值。</p>
+
+<p>当发现有端口Err-disable 时，先在交换机上查看端口err-disable 状态：</p>
+
+<pre><code>Switch(config-if)#show interface interface status
+
+err-disabled
+
+通过这条命令，可以看到端口err-disable 的原因。根据这一条，我们可以在交换机配置中添加命令来解决这个问题： Switch(config)#errdisable
+
+/*err-disable恢复原因。
+
+这里产生err-disable 的原因有很多种，但就ARP 包产生的问题，这一条要慎用。因为不确定下联设备是否是完全可信，针对这个，我们可以在相应端口上添加如下命令：
+
+Switch
+（config-if ）#ipdhcp snooping limit rate number Switch
+
+（config-if ）#iparp inspection limit rate number 这里的数值默认为30，最大值为2048，我们可以根据实际情况更改。在端口完成配置后，必须要对端口进行shutdown 和no shutdown 操作，否则端口状态不会改变。
+</code></pre>
+
+<p>此外，还有一条命令，配置后可以缩短故障恢复时间：</p>
+
+<pre><code>Switch(config)#errdisable recovery intervaltime /*time为时间，区间为30－86400秒，默认为300秒。
+</code></pre>
+
+<p>通过对原理的理解和相关参数命令的配置后，不仅能提升我们网络的安全稳定性，而且还可以对一些特殊端口采取特殊的配置以实现更为丰富又安全的应用。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/%E4%BC%81%E4%B8%9A%E7%A7%81%E6%9C%89harbor%E4%BB%93%E5%BA%93/" data-toggle="tooltip" data-placement="top" title="企业私有Harbor仓库">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/%E5%BC%80%E6%BA%90apm%E4%B8%9A%E5%8A%A1%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="开源APM业务性能剖析系统架构 ">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/secrity/mikrotik%E8%B7%AF%E7%94%B1%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E8%AE%BE%E7%BD%AE/">Mikrotik路由安全防范设置</a></li>
+                    
+                    <li><a href="/posts/devops/%E4%BC%81%E4%B8%9A%E7%A7%81%E6%9C%89harbor%E4%BB%93%E5%BA%93/">企业私有Harbor仓库</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/">优化nginx静态资源</a></li>
+                    
+                    <li><a href="/posts/devops/linux%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%AB%98%E7%BA%A7%E6%9D%83%E9%99%90%E5%B1%9E%E6%80%A7/">linux文件系统高级权限属性</a></li>
+                    
+                    <li><a href="/posts/devops/sre%E5%8F%82%E4%BC%9A%E6%80%BB%E7%BB%93/">Google SRE 参会总结</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri Dec 14, 2018</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

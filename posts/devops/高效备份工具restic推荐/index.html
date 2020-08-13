@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>高效备份神器restic推荐! - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="高速备份工具推荐">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/%E9%AB%98%E6%95%88%E5%A4%87%E4%BB%BD%E5%B7%A5%E5%85%B7restic%E6%8E%A8%E8%8D%90/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/%E9%AB%98%E6%95%88%E5%A4%87%E4%BB%BD%E5%B7%A5%E5%85%B7restic%E6%8E%A8%E8%8D%90/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">高效备份神器restic推荐!</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Sep 10, 2019</h4>
+    </section>
+    <h5 id="wc">500 Words|Read in about 3 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+  <aside class="toc">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#介绍">介绍</a></li>
+<li><a href="#支持备份介质">支持备份介质</a>
+<ul>
+<li>
+<ul>
+<li><a href="#本地磁盘">本地磁盘</a></li>
+<li><a href="#sftp-异地ssh主机磁盘">Sftp-异地SSH主机磁盘</a></li>
+<li><a href="#http-rest文件存储">HTTP rest文件存储</a></li>
+<li><a href="#aws-s3">AWS S3</a></li>
+<li><a href="#b2">B2</a></li>
+<li><a href="#azure-bs">Azure BS</a></li>
+<li><a href="#google-cloudstorage等">Google CloudStorage等</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#特点">特点</a>
+<ul>
+<li><a href="#简单">简单</a></li>
+<li><a href="#速度">速度</a></li>
+<li><a href="#安全">安全</a></li>
+<li><a href="#可校验">可校验</a></li>
+<li><a href="#高效">高效</a></li>
+</ul></li>
+<li><a href="#操作演练">操作演练</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </aside>
+  
+
+
+                <p>作为一个DevOps、SaOPS、NetOps、系统运维、网络运维、DBA人员来说，资料数据的备份是必不可少的。我们经常在各个软件产品维护过程备份各类数据库、程序文件、配置文件等。经常使用的工具有
+cp、scp、rsync、ssh、tar、git等等。然鹅，Restic是集大成于一身的超级备份神器！</p>
+
+<p>Restic是为何物?</p>
+
+<h3 id="介绍">介绍</h3>
+
+<p>restic 是一个 Go 语言编写的备份工具，特点是快速、高效而且安全。</p>
+
+<h3 id="支持备份介质">支持备份介质</h3>
+
+<h5 id="本地磁盘">本地磁盘</h5>
+
+<h5 id="sftp-异地ssh主机磁盘">Sftp-异地SSH主机磁盘</h5>
+
+<h5 id="http-rest文件存储">HTTP rest文件存储</h5>
+
+<h5 id="aws-s3">AWS S3</h5>
+
+<h5 id="b2">B2</h5>
+
+<h5 id="azure-bs">Azure BS</h5>
+
+<h5 id="google-cloudstorage等">Google CloudStorage等</h5>
+
+<h3 id="特点">特点</h3>
+
+<pre><code>1.按版本备份  
+2.多版本存储  
+3.差异化对比备份  
+4.老旧版本可以清理
+</code></pre>
+
+<h4 id="简单">简单</h4>
+
+<p>备份操作，应该非常容易操作。如果太过于复杂，可能运维人员就想跳过备份的情况。所以restic的备份操作非常简单，恢复也是一样的简单。只需要一个backup或者restore的关键字即可。比如：</p>
+
+<pre><code class="language-bash">备份
+restic -r /srv/restic-repo backup /www 
+restic -r /srv/restic-repo backup /conf 
+恢复
+restic -r /srv/restic-repo restore 79766175 --target /tmp/restore-work
+</code></pre>
+
+<h4 id="速度">速度</h4>
+
+<p>备份数据的速度，取决于你的磁盘IO性能或者网络吞吐性能，可以随时激活备份机制进行备份。还原备份也尽可能快速，并快速得到需要还原所需要的数据。否则就没有人去做还原或者备份了。</p>
+
+<h4 id="安全">安全</h4>
+
+<p>Restic使用加密技术来保证数据的机密性和完整性。假设存储备份数据的位置不是可信环境，restic的备份是加密的。其他人获取到备份文件也无济于事。</p>
+
+<h4 id="可校验">可校验</h4>
+
+<p>比备份还要重要的是恢复，如果备份都不能恢复，再高效、再安全的备份都无济于事。所以restic支持快速、简单地检测备份是否完整。</p>
+
+<h4 id="高效">高效</h4>
+
+<p>随着数据的增长，各个版本的快照备份只是增量数据的容量实际空间增长。重复数据的管理以保证宝贵的存储空间得以高效利用。</p>
+
+<h3 id="操作演练">操作演练</h3>
+
+<p>代码获取或安装</p>
+
+<pre><code>仓库 https://github.com/restic/restic
+</code></pre>
+
+<pre><code class="language-bash">初始化仓库
+restic -r /backup/ init
+备份
+restic -r /backup backup /wwww
+restic -r /backup backup /opt/nginx/conf
+</code></pre>
+
+<pre><code class="language-bash">检查快照
+#restic -r /backup/ check
+using temporary cache in /tmp/restic-check-cache-137737689
+enter password for repository:
+repository 6db5d370 opened successfully, password is correct
+created new cache in /tmp/restic-check-cache-137737689
+create exclusive lock for repository
+load indexes
+check all packs
+check snapshots, trees and blobs
+no errors were found
+
+</code></pre>
+
+<pre><code class="language-bash">#检查快照备份情况
+# restic -r /backup/ snapshots
+enter password for repository:
+repository 6db5d370 opened successfully, password is correct
+ID        Time                 Host           Tags        Paths
+-------------------------------------------------------------------------
+1b9f9482  2019-09-10 06:03:32  ip-10-10-1-91              /data/wwwroot
+492a4515  2019-09-10 06:08:48  ip-10-10-1-91              /opt/nginx/conf
+ad58caaa  2019-09-10 06:25:17  ip-10-10-1-91              /data/wwwroot
+5c166686  2019-09-10 06:28:52  ip-10-10-1-91              /data/wwwroot
+ad2490ad  2019-09-10 06:29:02  ip-10-10-1-91              /opt/nginx/conf
+-------------------------------------------------------------------------
+5 snapshots
+</code></pre>
+
+<pre><code class="language-bash">挂载备份
+restic -r /backup mount /r
+enter password for repository:
+repository 6db5d370 opened successfully, password is correct
+Now serving the repository at /r
+When finished, quit with Ctrl-c or umount the mountpoint.
+</code></pre>
+
+<pre><code>清理快照，只保留最新的2个
+# restic -r /backup/ forget --keep-last 2 --prune
+repository 6db5d370 opened successfully, password is correct
+Applying Policy: keep the last 2 snapshots snapshots
+keep 2 snapshots:
+ID        Time                 Host           Tags        Reasons        Paths
+----------------------------------------------------------------------------------------
+492a4515  2019-09-10 06:08:48  ip-10-10-1-91              last snapshot  /opt/nginx/conf
+ad2490ad  2019-09-10 06:29:02  ip-10-10-1-91              last snapshot  /opt/nginx/conf
+----------------------------------------------------------------------------------------
+2 snapshots
+
+keep 2 snapshots:
+ID        Time                 Host           Tags        Reasons        Paths
+--------------------------------------------------------------------------------------
+ad58caaa  2019-09-10 06:25:17  ip-10-10-1-91              last snapshot  /data/wwwroot
+5c166686  2019-09-10 06:28:52  ip-10-10-1-91              last snapshot  /data/wwwroot
+--------------------------------------------------------------------------------------
+2 snapshots
+
+remove 1 snapshots:
+ID        Time                 Host           Tags        Paths
+-----------------------------------------------------------------------
+1b9f9482  2019-09-10 06:03:32  ip-10-10-1-91              /data/wwwroot
+-----------------------------------------------------------------------
+1 snapshots
+
+1 snapshots have been removed, running prune
+counting files in repo
+building new index for repo
+[0:04] 100.00%  5075 / 5075 packs
+repository contains 5075 packs (74841 blobs) with 21.764 GiB
+processed 74841 blobs: 0 duplicate blobs, 0 B duplicate
+load all snapshots
+find data that is still in use for 4 snapshots
+[0:02] 100.00%  4 / 4 snapshots
+found 74813 of 74841 data blobs still in use, removing 28 blobs
+will remove 0 invalid files
+will delete 2 packs and rewrite 1 packs, this frees 4.516 MiB
+[0:00] 100.00%  1 / 1 packs rewritten
+counting files in repo
+[0:05] 100.00%  5073 / 5073 packs
+finding old index files
+saved new indexes as [f0e9bfae 41f4180c]
+remove 3 old index files
+[0:00] 100.00%  3 / 3 packs deleted
+done
+</code></pre>
+
+<pre><code>删除某个快照
+restic -r /srv/restic-repo forget bdbd3439
+清理磁盘文件
+restic -r /srv/restic-repo prune
+</code></pre>
+
+<pre><code>指定密码文件或者密码,自动化备份过程通过自定义环境变量或者密码文件进行无声备份
+RESTIC_PASSWORD or RESTIC_PASSWORD_FILE
+export RESTIC_PASSWORD=&quot;xxxpass&quot;
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/aws-vpc%E5%AE%89%E5%85%A8%E7%BB%84/" data-toggle="tooltip" data-placement="top" title="VPC安全组">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8C%96%E7%9F%BF%E6%95%99%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="以太坊挖矿介绍">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/aws-vpc%E5%AE%89%E5%85%A8%E7%BB%84/">VPC安全组</a></li>
+                    
+                    <li><a href="/posts/devops/coredns%E5%AE%9A%E4%B9%89%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E6%9C%BA/">CoreDNS自定义域名</a></li>
+                    
+                    <li><a href="/posts/devops/metrics%E6%8F%92%E4%BB%B6/">Metrics插件部署</a></li>
+                    
+                    <li><a href="/posts/devops/apollo%E5%9C%A8k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">k8s集群中部署apollo配置中心</a></li>
+                    
+                    <li><a href="/posts/devops/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91vpc%E6%9C%8D%E5%8A%A1/">SSH转发VPC内部服务</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Tue Sep 10, 2019</h4>
+    </section>
+    <h5 id="wc">500 Words|Read in about 3 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

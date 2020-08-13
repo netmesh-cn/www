@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on 堆栈运维</title>
+    <title>Categories on 服务器维护</title>
     <link>https://www.netmesh.cn/categories/</link>
-    <description>Recent content in Categories on 堆栈运维</description>
+    <description>Recent content in Categories on 服务器维护</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sklinux@qq.com (SK)</managingEditor>
     <webMaster>sklinux@qq.com (SK)</webMaster>
     
 	<atom:link href="https://www.netmesh.cn/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>安全</title>
+      <link>https://www.netmesh.cn/categories/%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/categories/%E5%AE%89%E5%85%A8/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>性能</title>
+      <link>https://www.netmesh.cn/categories/%E6%80%A7%E8%83%BD/</link>
+      <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/categories/%E6%80%A7%E8%83%BD/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

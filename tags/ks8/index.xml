@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ks8 on 服务器维护</title>
+    <link>https://www.sklinux.com/tags/ks8/</link>
+    <description>Recent content in ks8 on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Thu, 18 Jul 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.sklinux.com/tags/ks8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>EKS集群中使用EBS做卷</title>
+      <link>https://www.sklinux.com/posts/k8s/aws%E4%B8%8Aebs%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Thu, 18 Jul 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.sklinux.com/posts/k8s/aws%E4%B8%8Aebs%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;p&gt;在EKS集群中，有些时候对一些deployment服务有IO要求，这时候可以使用EBS块设备进行挂载到服务中使用。再加上EBS有各种容量尺寸、存储介质、卷快照可供选择，以此保证系统IO的需要和数据的可靠性。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

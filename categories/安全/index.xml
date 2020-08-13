@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>安全 on 服务器维护</title>
+    <link>https://www.netmesh.cn/categories/%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in 安全 on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/categories/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>php-fpm远程执行漏洞</title>
+      <link>https://www.netmesh.cn/posts/secrity/php-fpm%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/php-fpm%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</guid>
+      <description>&lt;p&gt;关于PHP-FPM远程代码执行漏洞（CNNVD-201910-1456、CVE-2019-11043）情况（2019.10.22），成功利用漏洞的攻击者，可远程执行代码。当Nginx + php-fpm 的服务器在特定配置下，都会受该漏洞影响。目前我们观察是php7才会受此漏洞影响。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>基于TLS1.3的微信安全通信协议mmtls介绍</title>
+      <link>https://www.netmesh.cn/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/</link>
+      <pubDate>Thu, 16 May 2019 10:58:18 +0800</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/mmtls%E4%BB%8B%E7%BB%8D/</guid>
+      <description>&lt;p&gt;　　随着近些年网络安全事情的频繁发生，使得用户对网络通信安全的意识越来越强。国内外的网络服务提供商都逐渐提供全站的安全通信服务，如国内的淘宝、百度先后宣布已经完成了全站部署https。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>僵尸网络 Mirai 新变种来袭，企业成新目标</title>
+      <link>https://www.netmesh.cn/posts/secrity/mirai/</link>
+      <pubDate>Tue, 26 Mar 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/mirai/</guid>
+      <description>&lt;p&gt;臭名昭著的 IoT/Linux 僵尸网络 Mirai 出现新变种，杀伤力更强。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>HTTPS连接过程以及中间人攻击劫持</title>
+      <link>https://www.netmesh.cn/posts/secrity/https%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8A%AB%E6%8C%81/</link>
+      <pubDate>Mon, 25 Feb 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/https%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8A%AB%E6%8C%81/</guid>
+      <description>&lt;p&gt;一 、HTTPS连接过程及中间人攻击原理&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>动态ARP检测原理及应用</title>
+      <link>https://www.netmesh.cn/posts/secrity/%E5%8A%A8%E6%80%81arp%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</link>
+      <pubDate>Fri, 14 Dec 2018 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/%E5%8A%A8%E6%80%81arp%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/</guid>
+      <description>&lt;p&gt;在一个局域网中，网络安全可以通过多种方式来实现，而采取DHCP snooping（DHCP 防护）及DAI 检测（ARP 防护）这种技术，保护接入交换机的每个端口，可以让网络更加安全，更加稳定，尽可能的减小中毒范围，不因病毒或木马导致全网的瘫痪。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Mikrotik路由安全防范设置</title>
+      <link>https://www.netmesh.cn/posts/secrity/mikrotik%E8%B7%AF%E7%94%B1%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E8%AE%BE%E7%BD%AE/</link>
+      <pubDate>Wed, 24 Oct 2018 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/secrity/mikrotik%E8%B7%AF%E7%94%B1%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E8%AE%BE%E7%BD%AE/</guid>
+      <description>&lt;p&gt;近期互联网整对Mirotik系列路由器做了大规模的渗透和入侵，所以提供给大家ros安全加固方法：&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

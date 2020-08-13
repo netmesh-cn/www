@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>k8s资源请求与限制设定规范 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="k8s资源请求与限制设定规范">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/k8s%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E4%B8%8E%E9%99%90%E5%88%B6%E8%AE%BE%E5%AE%9A%E8%A7%84%E8%8C%83/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/k8s%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E4%B8%8E%E9%99%90%E5%88%B6%E8%AE%BE%E5%AE%9A%E8%A7%84%E8%8C%83/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">k8s资源请求与限制设定规范</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Wed Jul 29, 2020</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>关于k8s集群中部署服务，服务资源的申请和限制，合理利用资源以及调度器调度之间的一些最佳实践。</p>
+
+<h4 id="介绍">介绍</h4>
+
+<p>业务容器化后，如果仅仅是将它跑起来，很简单。但如果是上生产，我们有许多地方是需要结合业务场景和部署环境进行方案选型和配置调优的。</p>
+
+<p>比如，如何设置容器的 Request 与 Limit?
+如何让部署的服务做到高可用？<br />
+如何配置健康检查？<br />
+如何进行弹性伸缩？<br />
+如何更好的进行资源调度？<br />
+如何选择持久化存储？<br />
+如何对外暴露服务？</p>
+
+<h4 id="关于服务的资源申请与限制">关于服务的资源申请与限制</h4>
+
+<p>Request 与 Limit 怎么设置才好
+如何为容器配置 Request 与 Limit?</p>
+
+<p>根据服务类型，需求与场景的不同而不同，没有固定的答案，比如JAVA、go的一些服务，以及不同的业务场景都有不同的配置。</p>
+
+<p>所有容器都应该设置 request</p>
+
+<p>request 的值并不是指给容器实际分配的资源大小，它仅仅是给调度器看的，调度器会 “观察” 每个节点可以用于分配的资源有多少，也知道每个节点已经被分配了多少资源。
+被分配资源的大小就是节点上所有 Pod 中定义的容器 request 之和，它可以计算出节点剩余多少资源可以被分配(可分配资源减去已分配的 request 之和)。
+如果发现节点剩余可分配资源大小比当前要被调度的 Pod 的 reuqest 还小，那么就不会考虑调度到这个节点，反之，才可能调度。</p>
+
+<p>所以，如果不配置 request，那么调度器就不能知道节点大概被分配了多少资源出去。</p>
+
+<p>调度器得不到准确信息，也就无法做出合理的调度决策，很容易造成调度不合理，有些节点可能很闲，而有些节点可能很忙，甚至 NotReady。</p>
+
+<p>所以，建议是给所有容器服务都设置 request值，让调度器感知节点有多少资源被分配了，以便做出合理的调度决策，让集群节点的资源能够被合理的分配使用，避免陷入资源分配不均导致一些意外发生。</p>
+
+<h4 id="namespace级别默认资源申请和限制">namespace级别默认资源申请和限制</h4>
+
+<p>有时候我们会忘记给部分容器设置 request 与 limit，其实我们可以使用 LimitRange 来设置 namespace 的默认 request 与 limit 值，同时它也可以用来限制最小和最大的 request 与 limit。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+  namespace: test
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+	  cpu: 500m
+    defaultRequest:
+      memory: 256Mi
+	  cpu: 100m
+    type: Container
+</code></pre>
+
+<p>如何让资源得到更合理的分配
+设置 Request 能够解决让 Pod 调度到有足够资源的节点上，但无法做到更细致的控制。</p>
+
+<p>如何进一步让资源得到合理的使用？我们可以结合亲和性、污点与容忍等高级调度技巧，让 Pod 能够被合理调度到合适的节点上，让资源得到充分的利用。</p>
+
+<h4 id="使用亲和性">使用亲和性</h4>
+
+<p>对节点有特殊要求的服务可以用节点亲和性 (Node Affinity) 部署，以便调度到符合要求的节点，比如让 MySQL 调度到高 IO 的机型以提升数据读写效率。</p>
+
+<p>可以将需要离得比较近的有关联的服务用 Pod 亲和性 (Pod Affinity) 部署，比如让 Web 服务跟它的 Redis 缓存服务都部署在同一可用区，实现低延时。</p>
+
+<p>也可使用 Pod 反亲和 (Pod AntiAffinity) 将 Pod 进行打散调度，避免单点故障或者流量过于集中导致的一些问题。</p>
+
+<h4 id="使用污点与容忍">使用污点与容忍</h4>
+
+<p>使用污点 (Taint) 与容忍 (Toleration) 可优化集群资源调度:</p>
+
+<p>通过给节点打污点来给某些应用预留资源，避免其它 Pod 调度上来。</p>
+
+<p>需要使用这些资源的 Pod 加上容忍，结合节点亲和性让它调度到预留节点，即可使用预留的资源。</p>
+
+<h4 id="弹性伸缩">弹性伸缩</h4>
+
+<p>如何支持流量突发型业务？</p>
+
+<p>通常业务都会有高峰和低谷，为了更合理的利用资源，我们为服务定义 HPA。
+实现根据 Pod 的资源实际使用情况来对服务进行自动扩缩容，在业务高峰时自动扩容 Pod 数量来支撑服务。<br />
+在业务低谷时，自动缩容 Pod 释放资源，以供其它服务使用（比如在夜间，线上业务低峰，自动缩容释放资源以供大数据之类的离线任务运行) 。</p>
+
+<p>使用 HPA 前提是让 K8S 得知道你服务的实际资源占用情况(指标数据)，需要安装 resource metrics (metrics.k8s.io) 或 custom metrics (custom.metrics.k8s.io) 的实现，好让 hpa controller 查询这些 API 来获取到服务的资源占用情况。</p>
+
+<p>早期 HPA 用 resource metrics 获取指标数据，后来推出 custom metrics，可以实现更灵活的指标来控制扩缩容。
+官方有个叫 metrics-server 的实现，通常社区使用的更多的是基于 prometheus 的 实现 prometheus-adapter。</p>
+
+<p>但最终都会转成 K8S 的 yaml，示例:</p>
+
+<pre><code class="language-yaml">apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: nginx
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Pods
+    pods:
+      metric:
+        name: k8s_pod_rate_cpu_core_used_request
+      target:
+        averageValue: &quot;100&quot;
+        type: AverageValue
+</code></pre>
+
+<h4 id="如何节约成本">如何节约成本</h4>
+
+<p>HPA 能实现 Pod 水平扩缩容，但如果节点资源不够用了，Pod 扩容出来还是会 Pending。
+如果我们提前准备好大量节点，做好资源冗余，提前准备好大量节点，通常不会有 Pod Pending 的问题，但也意味着需要付出更高的成本。
+通常云厂商托管的 K8S 集群都会实现 cluster-autoscaler，即根据资源使用情况，动态增删节点，让计算资源能够被最大化的弹性使用，按量付费，以节约成本。
+在TKE或者AWS上的实现叫做伸缩组AS服务，创建tke或者eks的时候可以设定相关伸缩策略以及伸缩实例规格等。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/ipsecvpn%E9%85%8D%E7%BD%AE/" data-toggle="tooltip" data-placement="top" title="ipsecVPN">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/hpa%E8%87%AA%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9/" data-toggle="tooltip" data-placement="top" title="HPA自动扩缩容">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/hpa%E8%87%AA%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9/">HPA自动扩缩容</a></li>
+                    
+                    <li><a href="/posts/devops/%E6%89%A9%E5%AE%B9oracle%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97/">扩容oracle重做日志大小提升性能</a></li>
+                    
+                    <li><a href="/posts/devops/pod%E5%86%85%E6%A0%B8tcp%E6%A0%88%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9/">pod内核tcp栈相关参数修改</a></li>
+                    
+                    <li><a href="/posts/devops/k8s%E9%9D%A2%E6%9D%BFhttps%E4%BF%AE%E7%90%86/">修复k8s上使用dashboard证书的问题</a></li>
+                    
+                    <li><a href="/posts/devops/%E6%9C%8D%E5%8A%A1%E7%A8%B3%E5%AE%9A%E6%80%A7%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81/">服务稳定性如何保证?</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Wed Jul 29, 2020</h4>
+    </section>
+    <h5 id="wc">300 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

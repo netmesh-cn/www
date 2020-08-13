@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on 服务器维护</title>
+    <link>https://www.netmesh.cn/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on 服务器维护</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>sklinux@qq.com (SK)</managingEditor>
+    <webMaster>sklinux@qq.com (SK)</webMaster>
+    <lastBuildDate>Mon, 04 Nov 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://www.netmesh.cn/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kubernetes1.16集群中部署指标服务遇见的坑</title>
+      <link>https://www.netmesh.cn/posts/k8s/%E9%9B%86%E7%BE%A4%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Mon, 04 Nov 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/%E9%9B%86%E7%BE%A4%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E6%9C%8D%E5%8A%A1/</guid>
+      <description>&lt;p&gt;在 Kubernetes1.16集群中，部署metrics-server-0.3.6，发现一直没有数据出现，不出现cpu、内存等利用率核心指标。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>kubernetes删除Namespace出现Terminating状态处理</title>
+      <link>https://www.netmesh.cn/posts/k8s/namespace%E5%88%A0%E9%99%A4%E5%87%BA%E7%8E%B0terminating%E7%8A%B6%E6%80%81/</link>
+      <pubDate>Tue, 29 Oct 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/namespace%E5%88%A0%E9%99%A4%E5%87%BA%E7%8E%B0terminating%E7%8A%B6%E6%80%81/</guid>
+      <description>&lt;p&gt;在 Kubernetes中，有时候我们一些测试的命名空间需要删除，但是里面还有运行了一系列对象，比如有deployment、pod和service等等。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes发布策略</title>
+      <link>https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/</link>
+      <pubDate>Mon, 24 Jun 2019 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/</guid>
+      <description>&lt;p&gt;在 Kubernetes中，有不同的发布更新的方式，有必要选择正确的策略。以便应用程序更新期间使产品基础架构可靠，尽量对用户产生影响。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

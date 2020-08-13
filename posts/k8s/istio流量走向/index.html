@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>ServiceMesh流量走向 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="Istio数据流在k8s集群中的整个走向介绍">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/k8s/istio%E6%B5%81%E9%87%8F%E8%B5%B0%E5%90%91/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">ServiceMesh流量走向</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Jun 20, 2019</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/k8s/">k8s</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>在服务网格后服务与服务之间的流量走向不再是默认k8s原来的走向路径了。具体表现可以对比在后端是GRPC多副本互相调度的时候，通过传统的SVC到iptables转发后端pod会发现流量不均衡的情况。启用网格后，然后定义好DestinationRule的轮训规则后。可以达到后端负载比较均匀。</p>
+
+<p>但是具体是怎么实现的呢？</p>
+
+<p>Istio 实现了 service mesh 的控制平面，并整合 Envoy 开源项目作为数据平面的 sidecar，一起对流量进行控制。</p>
+
+<p>pilot的业务架构图为：
+<img src="https://hugo-picture.oss-cn-beijing.aliyuncs.com/images/5Zywav.jpg" alt="istio" /></p>
+
+<p>途中讲有 统一的服务模型、标准数据面API、规则DSL语言。</p>
+
+<h4 id="统一的服务模型">统一的服务模型：</h4>
+
+<p>1.可以对各种不同底层平台进行对接，如图所示有kubernetes、mesos、cloudFoundry以及consul等。
+2.比如k8s中的流程是pilot中用k8s适配器，通过k8s API-server获取到k8s中的SVC、pod等信息。然后翻译成pilot标准模型。</p>
+
+<h4 id="标准数据平面api">标准数据平面API</h4>
+
+<p>Pilot 使用了一套起源于 Envoy 项目的标准数据平面 API 来将服务信息和流量规则下发到数据平面的 sidecar 中。
+Envoy V2 API,作为 Istio 控制平面和数据平面流量管理的标准接口。</p>
+
+<p>pilot控制平面与数据平面 架构图
+<img src="https://hugo-picture.oss-cn-beijing.aliyuncs.com/images/dCSUXw.jpg" alt="pilot" /></p>
+
+<p><font color=#FF0000 >红色</font>：控制流<br />
+黑色：数据流</p>
+
+<h3 id="流量管理组件">流量管理组件</h3>
+
+<p>1.服务发现</p>
+
+<p>image: gcr.io/istio-release/pilot<br />
+运行pod、svc名称：</p>
+
+<pre><code># k get pod,svc -n istio-system|grep istio-pilot
+pod/istio-pilot-78fff96ddf-bhggp   2/2  Running     4          37d
+service/istio-pilot              ClusterIP   10.107.143.245   &lt;none&gt;        15010/....TCP
+</code></pre>
+
+<p>功能：
+    1.从k8s中获取服务信息<br />
+    2.从k8s中获取流量规则（gw、vs、dstanationRule等CRD配置信息）<br />
+    3.将上面获取的信息翻译为envoy能识别的配置，然后通过api下发到各个sidecar的envoy</p>
+
+<p>2.K8S API-server中的CRD</p>
+
+<p>Pilot 的规则 DSL在k8s上抽象为CRD实现。CRD有如下几类：</p>
+
+<p>Gateway: 为网格配置网关，以允许一个服务可以被网格外部访问，可以理解为Ingress，支持TLS和http的虚拟主机以及tcp等。</p>
+
+<p>Virtualservice: 用于定义路由规则，如根据来源或 Header 制定规则，或在不同服务版本之间分拆流量的一些规则定义。</p>
+
+<p>DestinationRule: 定义目的服务的配置策略以及可路由子集（可以理解为后端选择svc的标签)。策略包括断路器、负载均衡以及 TLS 等。</p>
+
+<p>ServiceEntry: 网格内向网格外的服务发出请求的一些服务治理定义，比如定义某些远程接口可以访问，未定义默认拒绝。</p>
+
+<p>EnvoyFilter: Envoy 配置过滤器。EnvoyFilter启用Lua过滤器，动态改变Envoy的过滤链行为。</p>
+
+<p>Envoy是serviceMesh的数据层传送组件，接受来自Pilot的控制配置接受和应用（热加载）。</p>
+
+<h3 id="数据平面组件">数据平面组件</h3>
+
+<p>1.pilot-agent<br />
+    功能：根据 K8S-API Server中的配置信息生成Envoy的配置文件，并负责启动Envoy进程。并传送pilot地址接口和zipkin地址。大部分配置信息后续根据pilot服务地址动态获取。</p>
+
+<p>2.Envoy<br />
+    功能： Envoy由Pilot-agent进程启动。
+    启动后，Envoy 读取 Pilot-agent 为它生成的配置文件，然后根据该文件的配置获取到 Pilot 的地址，通过数据平面标准 API 的 xDS 接口从 pilot 拉取动态配置信息，包括路由（route），监听器（listener），服务集群（cluster）和服务端点（endpoint。<br />
+    Envoy 初始化完成后，就根据这些配置信息对微服务间的通信进行寻址和路由。</p>
+
+<h3 id="示范以及问题">示范以及问题：</h3>
+
+<p>1.在服务C的pod中,通过查看Envoy的管理接口(istio-proxy的15000服务)config_dump所有静态配置，思考是否完整？</p>
+
+<p>2.通过Envoy-config配置，找到grpc-P服务目标路由。</p>
+
+<p>3.通过在第一步中获取到的动态集群列表中，查找到目标服务集群grpc-P的OutbondCluster。</p>
+
+<p>4.通过在第3步中找到的service_name获取到详细后端路径。</p>
+
+<h3 id="示范及答案">示范及答案：</h3>
+
+<p>1.通过执行访问15000的config_dump接口获取路由信息。</p>
+
+<pre><code class="language-bash">#消费者GO的服务是frontend pod
+kubectl exec frontend-76d7c7cf44-6xjnr -c istio-proxy curl http://127.0.0.1:15000/config_dump &gt; dump.jsion
+2.获取到P的Envoy路由配置信息
+➜  ~ grep 8000 dump.json|grep cluster
+      &quot;name&quot;: &quot;outbound|8000||backend.default.svc.cluster.local&quot;,
+           &quot;stat_prefix&quot;: &quot;outbound|8000||backend.default.svc.cluster.local&quot;,
+           &quot;cluster&quot;: &quot;outbound|8000||backend.default.svc.cluster.local&quot;
+</code></pre>
+
+<p>可以看见 生产者的服务cluster,但是没有详细后端信息。所以信息不完整，这里并不是走的k8s的svc！</p>
+
+<pre><code>&quot;cluster&quot;: &quot;outbound|8000||backend.default.svc.cluster.local&quot;
+</code></pre>
+
+<p>3.因为每个envoy的配置信息不全，都是通过动态获取pilot服务的而来，所以去pilot服务去获取完整信息。所以获取信息方法为：</p>
+
+<pre><code>~# k get pod,svc -n istio-system|grep istio-pilot
+pod/istio-pilot-78fff96ddf-bhggp    2/2 Running 4   37d
+service/istio-pilot ClusterIP   10.107.143.245   &lt;none&gt; 15010/TCP,15011/TCP,8080/TCP,15014/TCP 
+</code></pre>
+
+<p>4.获取详细后端路径</p>
+
+<pre><code class="language-shel">kubectl port-forward svc/istio-pilot 15014:15014 -n istio-system
+curl http://127.0.0.1:15014/debug/endpointz &gt; endpoint.json
+
+cat endpoint.json|grep backend.default.svc.cluster.local
+{&quot;svc&quot;: &quot;backend.default.svc.cluster.local:grpc&quot;, &quot;ep&quot;: [
+{
+    &quot;endpoint&quot;: {
+      &quot;Family&quot;: 0,
+      &quot;Address&quot;: &quot;10.80.128.195&quot;,
+      &quot;Port&quot;: 8000,
+      &quot;ServicePort&quot;: {
+        &quot;name&quot;: &quot;grpc&quot;,
+        &quot;port&quot;: 8000,
+        &quot;protocol&quot;: &quot;GRPC&quot;
+      },
+...
+    &quot;service&quot;: {
+      &quot;hostname&quot;: &quot;backend.default.svc.cluster.local&quot;,
+      &quot;address&quot;: &quot;10.97.159.224&quot;,
+      &quot;Mutex&quot;: {},
+      &quot;cluster-vips&quot;: {
+        &quot;Kubernetes&quot;: &quot;10.97.159.224&quot;
+      },
+      &quot;ports&quot;: [
+        {
+          &quot;name&quot;: &quot;grpc&quot;,
+          &quot;port&quot;: 8000,
+          &quot;protocol&quot;: &quot;GRPC&quot;
+        }
+      ],
+...
+{
+    &quot;endpoint&quot;: {
+      &quot;Family&quot;: 0,
+      &quot;Address&quot;: &quot;10.80.153.151&quot;,
+      &quot;Port&quot;: 8000,
+      &quot;ServicePort&quot;: {
+        &quot;name&quot;: &quot;grpc&quot;,
+        &quot;port&quot;: 8000,
+        &quot;protocol&quot;: &quot;GRPC&quot;
+      },
+...
+    },
+    &quot;service&quot;: {
+      &quot;hostname&quot;: &quot;backend.default.svc.cluster.local&quot;,
+      &quot;address&quot;: &quot;10.97.159.224&quot;,
+      &quot;Mutex&quot;: {},
+      &quot;cluster-vips&quot;: {
+        &quot;Kubernetes&quot;: &quot;10.97.159.224&quot;
+      },
+      &quot;ports&quot;: [
+        {
+          &quot;name&quot;: &quot;grpc&quot;,
+          &quot;port&quot;: 8000,
+          &quot;protocol&quot;: &quot;GRPC&quot;
+        }
+...
+{
+    &quot;endpoint&quot;: {
+      &quot;Family&quot;: 0,
+      &quot;Address&quot;: &quot;10.80.167.213&quot;,
+      &quot;Port&quot;: 8000,
+      &quot;ServicePort&quot;: {
+        &quot;name&quot;: &quot;grpc&quot;,
+        &quot;port&quot;: 8000,
+        &quot;protocol&quot;: &quot;GRPC&quot;
+      },
+...
+    },
+    &quot;service&quot;: {
+      &quot;hostname&quot;: &quot;backend.default.svc.cluster.local&quot;,
+      &quot;address&quot;: &quot;10.97.159.224&quot;,
+      &quot;Mutex&quot;: {},
+      &quot;cluster-vips&quot;: {
+        &quot;Kubernetes&quot;: &quot;10.97.159.224&quot;
+      },
+      &quot;ports&quot;: [
+        {
+          &quot;name&quot;: &quot;grpc&quot;,
+          &quot;port&quot;: 8000,
+          &quot;protocol&quot;: &quot;GRPC&quot;
+        }
+...
+
+</code></pre>
+
+<p>5.Pilot内部的配置信息获取方法</p>
+
+<pre><code>kubectl port-forward svc/istio-pilot 15014:15014 -n istio-system  
+
+服务注册表信息
+curl http://127.0.0.1:15014/debug/registryz
+
+所有的endpoint
+curl http://127.0.0.1:9093/debug/endpointz[?brief=1]
+
+所有的配置信息
+curl http://127.0.0.1:15014/debug/configz
+
+Pilot自身的一些性能数据
+curl http://127.0.0.1:15014/metrics
+
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/k8s/grpc%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" data-toggle="tooltip" data-placement="top" title="Grpc在kubernetes集群中的负载均衡">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/k8s/%E5%8F%91%E5%B8%83%E7%AD%96%E7%95%A5/" data-toggle="tooltip" data-placement="top" title="Kubernetes发布策略">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/nginx%E5%BC%80%E5%90%AFhttp2/">Nginx开启http2</a></li>
+                    
+                    <li><a href="/posts/devops/zookeeper%E5%9C%A8kubernetes%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E9%83%A8%E7%BD%B2/">zk在k8s中的部署</a></li>
+                    
+                    <li><a href="/posts/devops/kubernetes%E5%A2%9E%E5%8A%A0%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9/">kubernetes增加计算节点</a></li>
+                    
+                    <li><a href="/posts/devops/k8s-nfs/">k8s上使用nfs</a></li>
+                    
+                    <li><a href="/posts/devops/%E5%89%8D%E7%AB%AF%E4%BC%98%E5%8C%96/">DNS预获取提升页面载入速度</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Thu Jun 20, 2019</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+        
+        <a href="https://www.netmesh.cn/tags/k8s/">k8s</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

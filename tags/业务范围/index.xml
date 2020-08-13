@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>业务范围 on 堆栈运维</title>
+    <title>业务范围 on 服务器维护</title>
     <link>https://www.netmesh.cn/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
-    <description>Recent content in 业务范围 on 堆栈运维</description>
+    <description>Recent content in 业务范围 on 服务器维护</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>sklinux@qq.com (SK)</managingEditor>
     <webMaster>sklinux@qq.com (SK)</webMaster>
-    <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://www.netmesh.cn/tags/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>业务范围</title>
+      <link>https://www.netmesh.cn/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</link>
+      <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
+      <author>sklinux@qq.com (SK)</author>
+      <guid>https://www.netmesh.cn/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</guid>
+      <description>&lt;p&gt;根据客户的不同需求，为客户提供以下IT外包服务：&lt;br /&gt;
+1.IT资源整体外包：为客户提供全套的IT系统规划、采购、实施、运维、咨询、培训的整体服务，适用于不想成立IT部门或雇用IT工程师，并迫切希望降低运营成本的公司。&lt;/p&gt;
+
+&lt;p&gt;2.单项IT技术外包服务：也许您的公司有少量的计算机人员，难以应付日常的各种繁杂事务，可以把您觉得棘手的事情交给我们，如网络建设，硬件设备维护，单项软件开发，我们可以按项目，时间，设备量等各种方式计费，提供服务。&lt;/p&gt;
+
+&lt;p&gt;3.维护外包：当系统已经建设好，维护人员日常工作不多，有了问题时又忙不过来，我们可以提供随机的维护外包服务，作为我们的客户，您在遇到问题时可以享受到团队技术力量的服务，保障已建系统的正常运行。&lt;/p&gt;
+
+&lt;p&gt;4.IT行业信息咨询：目的是帮助客户找到正确的价格比并及时、准确了解IT行业前沿技术动态；系统解决方案，目的是根据企业网络实际情况及时、有效提出合理的优化、升级方案书，使企业网络系统总是处于最佳状态。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>业务范围</title>
@@ -18,7 +34,14 @@
       <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
       <author>sklinux@qq.com (SK)</author>
       <guid>https://www.netmesh.cn/posts/devops/%E4%B8%9A%E5%8A%A1%E8%8C%83%E5%9B%B4/</guid>
-      <description>&lt;p&gt;云管理服务：云咨询、云迁移、云部署云运维以及帮助传统企业云培训。&lt;/p&gt;</description>
+      <description>&lt;p&gt;根据客户的不同需求，为客户提供以下IT外包服务：&lt;br /&gt;
+1.IT资源整体外包：为客户提供全套的IT系统规划、采购、实施、运维、咨询、培训的整体服务，适用于不想成立IT部门或雇用IT工程师，并迫切希望降低运营成本的公司。&lt;/p&gt;
+
+&lt;p&gt;2.单项IT技术外包服务：也许您的公司有少量的计算机人员，难以应付日常的各种繁杂事务，可以把您觉得棘手的事情交给我们，如网络建设，硬件设备维护，单项软件开发，我们可以按项目，时间，设备量等各种方式计费，提供服务。&lt;/p&gt;
+
+&lt;p&gt;3.维护外包：当系统已经建设好，维护人员日常工作不多，有了问题时又忙不过来，我们可以提供随机的维护外包服务，作为我们的客户，您在遇到问题时可以享受到团队技术力量的服务，保障已建系统的正常运行。&lt;/p&gt;
+
+&lt;p&gt;4.IT行业信息咨询：目的是帮助客户找到正确的价格比并及时、准确了解IT行业前沿技术动态；系统解决方案，目的是根据企业网络实际情况及时、有效提出合理的优化、升级方案书，使企业网络系统总是处于最佳状态。&lt;/p&gt;</description>
     </item>
     
   </channel>

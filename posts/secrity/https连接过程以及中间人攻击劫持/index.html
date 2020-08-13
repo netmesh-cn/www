@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>HTTPS连接过程以及中间人攻击劫持 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="一 、HTTPS连接过程及中间人攻击原理">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/secrity/https%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8A%AB%E6%8C%81/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/secrity/https%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB%E5%8A%AB%E6%8C%81/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">HTTPS连接过程以及中间人攻击劫持</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Feb 25, 2019</h4>
+    </section>
+    <h5 id="wc">200 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>一 、HTTPS连接过程及中间人攻击原理</p>
+
+<p>https协议就是http+ssl协议，如下图所示为其连接过程：<br />
+<img src="https://static.oschina.net/uploads/img/201712/04095322_XXOc.jpg" alt="" />
+1.https请求
+客户端向服务端发送https请求；<br />
+2.生成公钥和私钥<br />
+服务端收到请求之后，生成公钥和私钥。公钥相当于是锁，私钥相当于是钥匙，只有私钥才能够打开公钥锁住的内容；<br />
+3.返回公钥<br />
+服务端将公钥（证书）返回给客户端，公钥里面包含有很多信息，比如证书的颁发机构、过期时间等等；<br />
+4.客户端验证公钥<br />
+客户端收到公钥之后，首先会验证其是否有效，如颁发机构或者过期时间等，如果发现有问题就会抛出异常，提示证书存在问题。如果没有问题，那么就生成一个随机值，作为客户端的密钥，然后用服务端的公钥加密；<br />
+5.发送客户端密钥<br />
+客户端用服务端的公钥加密密钥，然后发送给服务端。<br />
+6.服务端收取密钥，对称加密内容<br />
+服务端收到经过加密的密钥，然后用私钥将其解密，得到客户端的密钥，然后服务端把要传输的内容和客户端的密钥进行对称加密，这样除非知道密钥，否则无法知道传输的内容。<br />
+7.加密传输<br />
+服务端将经过加密的内容传输给客户端。<br />
+8.获取加密内容，解密客户端获取加密内容后，用之前生成的密钥对其进行解密，获取到内容。<br />
+中间人劫持攻击<br />
+https也不是绝对安全的，如下图所示为中间人劫持攻击，中间人可以获取到客户端与服务器之间所有的通信内容。<br />
+<img src="https://static.oschina.net/uploads/img/201712/04095322_Ey4I.jpg" alt="" />
+中间人截取客户端发送给服务器的请求，然后伪装成客户端与服务器进行通信；将服务器返回给客户端的内容发送给客户端，伪装成服务器与客户端进行通信。<br />
+通过这样的手段，便可以获取客户端和服务器之间通信的所有内容。<br />
+使用中间人攻击手段，必须要让客户端信任中间人的证书，如果客户端不信任，则这种攻击手段也无法发挥作用。</p>
+
+<p>二、中间人攻击的预防</p>
+
+<p>造成中间人劫持的原因是 没有对服务端证书及域名做校验或者校验不完整，为了方便，直接采用开源框架默认的校验方式进行https请求</p>
+
+<p>如volley
+<img src="https://static.oschina.net/uploads/space/2017/1204/094954_aFtw_3729392.png" alt="" />
+<img src="https://static.oschina.net/uploads/space/2017/1204/095011_gpQ9_3729392.png" alt="" />
+OKhttp3.0
+<img src="https://static.oschina.net/uploads/space/2017/1204/094610_NTm2_3729392.png" alt="" />
+预防方法：</p>
+
+<p>预防方式有两种</p>
+
+<p>1 、针对安全性要求比较高的 app，可采取客户端预埋证书的方式锁死证书，只有当客户端证书和服务端的证书完全一致的情况下才允许通信，如一些银行类的app，但这种方式面临一个问题，证书过期的问题，因证书有一定的有效期，当预埋证书过期了，只有通过强制更新或者要求用户下载证书来解决。</p>
+
+<p>以volley为例：校验的实现方式如下</p>
+
+<p>通过预埋证书创建 SSLSocketFactory;</p>
+
+<pre><code class="language-java">private static SSLSocketFactory buildSSLSocketFactory(Context context,
+                                                      int certRawResId) {
+    KeyStore keyStore = null;
+    try {
+        keyStore = buildKeyStore(context, certRawResId);
+    } catch (KeyStoreException e) {
+        e.printStackTrace();
+    } catch (CertificateException e) {
+        e.printStackTrace();
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+    TrustManagerFactory tmf = null;
+    try {
+        tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+        tmf.init(keyStore);
+
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    } catch (KeyStoreException e) {
+        e.printStackTrace();
+    }
+
+    SSLContext sslContext = null;
+    try {
+        sslContext = SSLContext.getInstance(&quot;TLS&quot;);
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    }
+    try {
+        sslContext.init(null, tmf.getTrustManagers(), null);
+    } catch (KeyManagementException e) {
+        e.printStackTrace();
+    }
+
+    return sslContext.getSocketFactory();
+</code></pre>
+
+<p>生成 经过ssl校验及 域名校验的connection
+<img src="https://static.oschina.net/uploads/space/2017/1204/095243_D1EX_3729392.png" alt="" />
+<img src="https://static.oschina.net/uploads/space/2017/1204/095310_cD8S_3729392.png" alt="" />
+2 针对安全性要求一般的app，可采用通过校验域名，证书有效性、证书关键信息及证书链的方式</p>
+
+<p>以volley为例，重写HTTPSTrustManager 中的checkServerTrusted 方法，同时开启域名强校验</p>
+
+<p>三、Webview的HTTPS安全</p>
+
+<p>目前很多应用都用webview加载H5页面，如果服务端采用的是可信CA颁发的证书，在 webView.setWebViewClient(webviewClient) 时重载 WebViewClient的onReceivedSslError() ，如果出现证书错误，直接调用handler.proceed()会忽略错误继续加载证书有问题的页面，如果调用handler.cancel()可以终止加载证书有问题的页面，证书出现问题了，可以提示用户风险，让用户选择加载与否，如果是需要安全级别比较高，可以直接终止页面加载，提示用户网络环境有风险：
+<img src="https://static.oschina.net/uploads/img/201712/04095322_wGlU.jpg" alt="" />
+不建议直接用handler.proceed()。<br />
+如果webview加载https需要强校验服务端证书，可以在 onPageStarted() 中用 HttpsURLConnection 强校验证书的方式来校验服务端证书，如果校验不通过停止加载网页。当然这样会拖慢网页的加载速度，需要进一步优化，具体优化的办法不在本次讨论范围，这里也不详细讲解了。</p>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/%E5%BC%80%E6%BA%90apm%E4%B8%9A%E5%8A%A1%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="开源APM业务性能剖析系统架构 ">&larr; 前一篇</a>
+                </li>
+                 
+                <li class="next">
+                    <a href="https://www.netmesh.cn/posts/devops/apollo%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E6%96%B0%E5%A2%9E%E8%87%AA%E5%AE%9A%E4%B9%89%E7%8E%AF%E5%A2%83/" data-toggle="tooltip" data-placement="top" title="apollo配置中心新增自定义环境">后一篇 &rarr;</a>
+                </li>
+                
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/secrity/%E5%8A%A8%E6%80%81arp%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86%E5%8F%8A%E5%BA%94%E7%94%A8/">动态ARP检测原理及应用</a></li>
+                    
+                    <li><a href="/posts/secrity/mikrotik%E8%B7%AF%E7%94%B1%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E8%AE%BE%E7%BD%AE/">Mikrotik路由安全防范设置</a></li>
+                    
+                    <li><a href="/posts/devops/%E5%BC%80%E6%BA%90apm%E4%B8%9A%E5%8A%A1%E6%80%A7%E8%83%BD%E5%89%96%E6%9E%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">开源APM业务性能剖析系统架构 </a></li>
+                    
+                    <li><a href="/posts/devops/%E4%BC%81%E4%B8%9A%E7%A7%81%E6%9C%89harbor%E4%BB%93%E5%BA%93/">企业私有Harbor仓库</a></li>
+                    
+                    <li><a href="/posts/devops/nginx%E5%AF%B9%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E7%9A%84%E4%BC%98%E5%8C%96%E8%AE%BE%E7%BD%AE/">优化nginx静态资源</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Mon Feb 25, 2019</h4>
+    </section>
+    <h5 id="wc">200 Words|Read in about 1 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

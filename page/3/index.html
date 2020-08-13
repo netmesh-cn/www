@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>服务器维护 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+  
+
+
+
+
+  
+    <div id="header-big-imgs" data-num-img=3 data-img-src-1="https://www.netmesh.cn/img/triangle.jpg" data-img-desc-1="服务器维护"data-img-src-2="https://www.netmesh.cn/img/big-data-1.jpg" data-img-desc-2="数据中心"data-img-src-3="https://www.netmesh.cn/img/great-wall-01.jpg" data-img-desc-3="安全防护"></div>
+  
+
+  <header class="header-section has-img">
+    
+      <div class="intro-header big-img">
+        
+        
+        <div class="container">
+          <div class="row">
+              <div class="col-lg-12 col-md-12 col-md-offset-0">
+                
+                <div class="page-heading">
+                
+                  
+                     <h1 align="center"></h1>
+                  
+                  
+                  
+                    <hr class="small">
+                    <span class="page-subheading">专注服务于当下互联网基础设施运维与云计算、大数据时代的各种DevOps最佳实践!</span>
+                  
+                  
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="img-desc" style="display: inline;"></span>
+      </div>
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="page-heading">
+                <h1 align="center">服务器维护</h1>
+                
+                  
+                    <hr class="small">
+                    <span class="page-subheading">专注服务于当下互联网基础设施运维与云计算、大数据时代的各种DevOps最佳实践!</span>
+                  
+                
+                
+                  <span class="post-meta">
+  
+  
+</span>
+
+
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div role="main" class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      
+      
+      
+      <div class="posts-list">
+        
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/%E4%BA%92%E8%81%94%E7%BD%91%E4%BA%A7%E5%93%81%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E7%94%A8%E6%88%B7ip%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/">
+            <h3 class="post-title">互联网产品获取真实用户ip需求分析与技术实现</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 November 27, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>很多互联网产品在某些地方需要展示用户ip场景的时候，有这样的一个需求需要相应的系统能获取到用户真实的ip。这个需求非常非常普遍，非常非常多。<br />
+但是很多人都没有理解到什么是“真实”ip和真正需要的ip以及解决方案。</p>
+            <a href="https://www.netmesh.cn/posts/devops/%E4%BA%92%E8%81%94%E7%BD%91%E4%BA%A7%E5%93%81%E8%8E%B7%E5%8F%96%E7%9C%9F%E5%AE%9E%E7%94%A8%E6%88%B7ip%E5%88%86%E6%9E%90%E4%B8%8E%E5%AE%9E%E7%8E%B0/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/k8s/%E9%9B%86%E7%BE%A4%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E6%9C%8D%E5%8A%A1/">
+            <h3 class="post-title">Kubernetes1.16集群中部署指标服务遇见的坑</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 November 4, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>在 Kubernetes1.16集群中，部署metrics-server-0.3.6，发现一直没有数据出现，不出现cpu、内存等利用率核心指标。</p>
+            <a href="https://www.netmesh.cn/posts/k8s/%E9%9B%86%E7%BE%A4%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E6%9C%8D%E5%8A%A1/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/kubernetes/">kubernetes</a>&nbsp;
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/secrity/php-fpm%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/">
+            <h3 class="post-title">php-fpm远程执行漏洞</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 November 1, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>关于PHP-FPM远程代码执行漏洞（CNNVD-201910-1456、CVE-2019-11043）情况（2019.10.22），成功利用漏洞的攻击者，可远程执行代码。当Nginx + php-fpm 的服务器在特定配置下，都会受该漏洞影响。目前我们观察是php7才会受此漏洞影响。</p>
+            <a href="https://www.netmesh.cn/posts/secrity/php-fpm%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/secrity/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0/">
+            <h3 class="post-title">Linux服务器性能评估</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 October 31, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>我们评估一台linux服务器的性能是好还是坏，是通过多个系统关键指标得出的判断。我们这篇文章主要详细阐述了相关指标的计算方法和数据获取的工具。</p>
+            <a href="https://www.netmesh.cn/posts/secrity/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/%E6%80%A7%E8%83%BD/">性能</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/k8s/namespace%E5%88%A0%E9%99%A4%E5%87%BA%E7%8E%B0terminating%E7%8A%B6%E6%80%81/">
+            <h3 class="post-title">kubernetes删除Namespace出现Terminating状态处理</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 October 29, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>在 Kubernetes中，有时候我们一些测试的命名空间需要删除，但是里面还有运行了一系列对象，比如有deployment、pod和service等等。</p>
+            <a href="https://www.netmesh.cn/posts/k8s/namespace%E5%88%A0%E9%99%A4%E5%87%BA%E7%8E%B0terminating%E7%8A%B6%E6%80%81/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/kubernetes/">kubernetes</a>&nbsp;
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/supervisor%E9%81%87%E8%A7%81%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9D%91/">
+            <h3 class="post-title">supervisor守护服务遇见的几个坑</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 October 11, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>近期在ubunt系列服务器上遇见了supervisor的几个坑，所以将服务守护都已经切换到systemd。</p>
+            <a href="https://www.netmesh.cn/posts/devops/supervisor%E9%81%87%E8%A7%81%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9D%91/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/laravel%E7%BC%93%E5%AD%98%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/">
+            <h3 class="post-title">Laravel运行缓存权限问题</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 September 27, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>Laravel 开发中遇到权限问题 failed to open stream: Permission denied</p>
+            <a href="https://www.netmesh.cn/posts/devops/laravel%E7%BC%93%E5%AD%98%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/rm%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B8%8E%E6%81%A2%E5%A4%8D/">
+            <h3 class="post-title">linux下rm删除与恢复</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 September 27, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>最近一个新客户由于长期没做备份，再加上客户与之前的技术合作伙伴之间的一些不愉快。导致客户的整体linux系统被全部用rm删除。我们对这种技术人员的职业素养、道德品质和法律素养表示唏嘘，客户已经在第一时间进行了报案和立案工作，犯罪嫌疑人迟早会被绳之以法的。在唏嘘感叹的同时间，我们建议所有的企业第一时间要做好数据定时异地备份，下面介绍linux下的ext4文件系统删除原理。</p>
+            <a href="https://www.netmesh.cn/posts/devops/rm%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B8%8E%E6%81%A2%E5%A4%8D/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/ubuntu%E5%85%B3%E9%97%AD%E5%86%85%E6%A0%B8%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/">
+            <h3 class="post-title">ubuntu关闭内核自动更新</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 September 17, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>ubuntu server和desktop版本都默认启动了，自动更新内核的操作。这对于生产环境来说是不友好的。因为新的内核可能引入新的安全问题、不稳定因素。</p>
+            <a href="https://www.netmesh.cn/posts/devops/ubuntu%E5%85%B3%E9%97%AD%E5%86%85%E6%A0%B8%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%B4%E6%8A%A4/">服务器维护</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+        <article class="post-preview">
+          <a href="https://www.netmesh.cn/posts/devops/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8C%96%E7%9F%BF%E6%95%99%E7%A8%8B/">
+            <h3 class="post-title">以太坊挖矿介绍</h3>
+            
+          </a>
+
+          <span class="post-meta">
+  
+  发表于 September 17, 2019
+  
+  
+</span>
+
+
+          <div class="post-entry">
+            
+            <p>以太坊挖矿是一个涉及高度计算的工作，需要大量的时间和处理能力,期间会消耗大量的电力。<br />
+其主要算法是Ethash。</p>
+            <a href="https://www.netmesh.cn/posts/devops/%E4%BB%A5%E5%A4%AA%E5%9D%8A%E6%8C%96%E7%9F%BF%E6%95%99%E7%A8%8B/" class="post-read-more">[阅读全文]</a>
+            
+          </div>
+
+          
+          <span class="post-meta">
+            
+            #<a href="https://www.netmesh.cn/tags/devops/">Devops</a>&nbsp;
+            
+          </span>
+          
+        </article>
+        
+      </div>
+
+      
+      <ul class="pager main-pager">
+        
+        <li class="previous">
+          <a href="/page/2">&larr; 上一页</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/page/4">下一页 &rarr;</a>
+        </li>
+        
+      </ul>
+      
+    </div>
+    <div align="center" class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      
+
+<ul class="pagination">
+    
+    <li class="page-item">
+        <a href="/" class="page-link" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
+    </li>
+    
+    <li class="page-item">
+    <a href="/page/2/" class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+    </li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/">1</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/page/2/">2</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item active"><a class="page-link" href="/page/3/">3</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/page/4/">4</a></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item disabled"><span aria-hidden="true">&nbsp;&hellip;&nbsp;</span></li>
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    
+    
+    
+    
+    
+        
+        
+    
+    
+    <li class="page-item"><a class="page-link" href="/page/8/">8</a></li>
+    
+    
+    <li class="page-item">
+    <a href="/page/4/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+    </li>
+    
+    <li class="page-item">
+        <a href="/page/8/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    </li>
+    
+</ul>
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </div>
+  </div>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>

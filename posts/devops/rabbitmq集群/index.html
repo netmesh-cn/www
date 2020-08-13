@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  
+  
+  
+  
+  <title>创建高可用RabbitMQ集群 - SKlinux服务器维护</title>
+  <meta name='keywords' content="服务器维护,广东服务器维护,上海服务器维护,北京linux维护,广东linux维护,成都服务器维护,linux服务器配置,qq33615066">
+  
+  
+  <meta name="description" content="DNS预获取提升页面载入速度">
+  
+  
+  <meta name="author" content="SK" />
+  <link href='https://www.netmesh.cn/img/favicon.ico' rel='icon' type='image/x-icon' />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://www.netmesh.cn/posts/devops/rabbitmq%E9%9B%86%E7%BE%A4/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="服务器维护" />
+  
+  <meta name="generator" content="Hugo 0.54.0" />
+  <link rel="canonical" href="https://www.netmesh.cn/posts/devops/rabbitmq%E9%9B%86%E7%BE%A4/" />
+  <link rel="alternate" href="https://www.netmesh.cn/index.xml" type="application/rss+xml" title="服务器维护">
+  <script src="https://s.sklinux.com/hugo/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.css"
+    integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/Font-Awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://s.sklinux.com/hugo/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/main.css" />
+  <link rel="stylesheet" href="https://www.netmesh.cn/css/search.css" />
+  
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.css"
+  integrity="sha256-QXRlPSsq6O2B2cA1Di5ScXZ5rbQBFNYB4gwwaK7FHQc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://s.sklinux.com/hugo/photoSwipe/4.1.1/default-skin/default-skin.css"
+  integrity="sha256-qTas8rlr4N+bHppHFL1MP8IyRJUzdKbjRHxs+WCUFHA=" crossorigin="anonymous" />
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  
+  <div class="pswp__bg"></div>
+  
+  <div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        
+        <div class="pswp__counter"></div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--share" title="Share"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        
+        
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip"></div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-25588277-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://www.netmesh.cn/">服务器维护</a>
+    </div>
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="/">主页</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="业务范围" href="/%e4%b8%9a%e5%8a%a1%e8%8c%83%e5%9b%b4">业务范围</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我们" href="/about">关于我们</a>
+              
+              
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+              
+              
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">友情链接</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.sklinux.com">服务器维护</a>
+                
+                
+                  <a href="https://www.netmesh.cn">堆栈运维</a>
+                
+                
+                  <a href="https://www.aliyun.com/minisite/goods?userCode=gxrhfi2o">阿里云优惠卷</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">类别</a>
+              <div class="navlinks-children">
+                
+                
+                  <a href="https://www.netmesh.cn/about/">联系方式</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/ingress/">K8S</a>
+                
+                
+                  <a href="https://www.netmesh.cn/tags/%E5%AE%89%E5%85%A8/">安全加固</a>
+                
+              </div>
+            </li>
+          
+        
+
+        
+
+        
+        
+      </ul>
+    </div>
+
+    <div class="avatar-container">
+      <div class="avatar-img-border">
+        
+          <a title="服务器维护" href="https://www.netmesh.cn/">
+            <img class="avatar-img" src="https://www.netmesh.cn/img/avatar-icon.png" alt="服务器维护" />
+          </a>
+        
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+
+
+
+
+  
+  
+  
+  
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-md-offset-0">
+            <div class="posts-heading">
+                <h1 align="center">创建高可用RabbitMQ集群</h1>
+                
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  
+<div class="container" role="main" itemscope itemtype="http://schema.org/Article">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri Jul 31, 2020</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            <article role="main" class="blog-post" itemprop="articleBody" id="content">
+                
+  
+
+
+                <p>在项目中需要业务解耦的时候要用着MQ，那么我们需要将RabbitMQ变的更加健壮和稳定，提高可用性。所有需要在kubernetes上创建高可用Rabbitmq集群或者在传统的服务器之间架设高可用的MQ集群。<br />
+由于RabbitMQ是由Erlang写的，所以天生支持分布式。</p>
+
+<h3 id="集群分类">集群分类</h3>
+
+<h5 id="对等集群节点">对等集群节点</h5>
+
+<p>ha all 所有节点为对等体</p>
+
+<h5 id="不对等集群节点">不对等集群节点</h5>
+
+<p>disk ram 节点类型</p>
+
+<h5 id="镜像队列策略">镜像队列策略</h5>
+
+<p>根据策略进行队列进行自动高可用复制<br />
+根据策略特定队列不需要集群或者需要集群，这样更灵活</p>
+
+<h3 id="集群先决条件以及原则">集群先决条件以及原则</h3>
+
+<h4 id="节点名">节点名</h4>
+
+<p>两个部分，比如rabbit和主机名，构成节点名
+rabbit@hostname
+所有节点名在集群中唯一，所有节点能互相解析hostname</p>
+
+<h4 id="资源要求">资源要求</h4>
+
+<p>节点类型之间的差异
+节点与节点之间端口需要互通</p>
+
+<h4 id="节点之间如何互相验证">节点之间如何互相验证？</h4>
+
+<p>Erlang cookie</p>
+
+<h4 id="节点重启以及重启后如何加入集群">节点重启以及重启后如何加入集群？</h4>
+
+<p>节点可以重启脱离集群并不影响正在运行的节点服务，当节点启动时，会从对等体中同步相应对象和数据。</p>
+
+<h4 id="要使用奇数节点">要使用奇数节点</h4>
+
+<p>共识角度需要使用奇数节点数量作为集群节点总和</p>
+
+<h4 id="如何删除集群">如何删除集群？</h4>
+
+<p>如何从集群中脱离节点，并成为独立mq集群？<br />
+1.停止<br />
+rabbitmqctl stop_app<br />
+2.重置mq数据<br />
+rabbitmqctl reset<br />
+3.成为独立mq集群<br />
+rabbitmqctl start_app</p>
+
+<h4 id="如何重置集群">如何重置集群？</h4>
+
+<p>有时候需要重置节点，抹掉所有数据，然后再重新加入集群。所以需要重置<br />
+1.rabbitmqctl stop_app<br />
+2.rabbitmqctl reset</p>
+
+<h4 id="集群组成集群方式">集群组成集群方式</h4>
+
+<p>1.配置文件<br />
+2.使用dns发现<br />
+3.使用ec2实例插件<br />
+4.使用k8s的服务发现注册服务<br />
+5.consul<br />
+6.etcd<br />
+7.手动rabbitmqctl</p>
+
+<h4 id="kubernetes部署">kubernetes部署</h4>
+
+<pre><code class="language-bash">sk@os ~/rabbitmq-ha/rabbitmq-ha # helm install mq .
+NAME: mq
+LAST DEPLOYED: Thu Jul 30 16:36:12 2020
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+** Please be patient while the chart is being deployed **
+
+  Credentials:
+
+    Username            : guest
+    Password            : $(kubectl get secret --namespace default mq-rabbitmq-ha -o jsonpath=&quot;{.data.rabbitmq-password}&quot; | base64 --decode)
+    Management username : management
+    Management password : $(kubectl get secret --namespace default mq-rabbitmq-ha -o jsonpath=&quot;{.data.rabbitmq-management-password}&quot; | base64 --decode)
+    ErLang Cookie       : $(kubectl get secret --namespace default mq-rabbitmq-ha -o jsonpath=&quot;{.data.rabbitmq-erlang-cookie}&quot; | base64 --decode)
+
+  RabbitMQ can be accessed within the cluster on port 5672 at mq-rabbitmq-ha.default.svc.cluster.local
+
+  To access the cluster externally execute the following commands:
+
+    export POD_NAME=$(kubectl get pods --namespace default -l &quot;app=rabbitmq-ha&quot; -o jsonpath=&quot;{.items[0].metadata.name}&quot;)
+    kubectl port-forward $POD_NAME --namespace default 5672:5672 15672:15672
+
+  To Access the RabbitMQ AMQP port:
+
+    amqp://127.0.0.1:5672/
+
+  To Access the RabbitMQ Management interface:
+
+    URL : http://127.0.0.1:15672
+
+ sk@os ~/rabbitmq-ha/rabbitmq-ha # kubectl get pod
+NAME                          READY   STATUS    RESTARTS   AGE
+mq-rabbitmq-ha-0              1/1     Running   0          2m50s
+mq-rabbitmq-ha-1              1/1     Running   0          117s
+mq-rabbitmq-ha-2              1/1     Running   0          79s
+
+#设置内存节点
+kubectl exec -it mq-rabbitmq-ha-1 bash
+bash-5.0$ rabbitmqctl stop_app
+Stopping rabbit application on node rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local ...
+
+bash-5.0$ rabbitmqctl change_cluster_node_type ram
+Turning rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local into a ram node
+
+bash-5.0$ rabbitmqctl start_app
+Starting node rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local ...
+bash-5.0$
+</code></pre>
+
+<pre><code class="language-bash">#设置内存节点结果查看
+bash-5.0$ rabbitmqctl cluster_status
+Cluster status of node rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local ...
+Basics
+
+Cluster name: rabbit@mq-rabbitmq-ha-0.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+
+Disk Nodes
+
+rabbit@mq-rabbitmq-ha-0.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+rabbit@mq-rabbitmq-ha-2.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+
+RAM Nodes
+
+rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+
+Running Nodes
+
+rabbit@mq-rabbitmq-ha-0.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+rabbit@mq-rabbitmq-ha-2.mq-rabbitmq-ha-discovery.default.svc.cluster.local
+
+Versions
+
+rabbit@mq-rabbitmq-ha-0.mq-rabbitmq-ha-discovery.default.svc.cluster.local: RabbitMQ 3.8.5 on Erlang 23.0.3
+rabbit@mq-rabbitmq-ha-1.mq-rabbitmq-ha-discovery.default.svc.cluster.local: RabbitMQ 3.8.5 on Erlang 23.0.3
+rabbit@mq-rabbitmq-ha-2.mq-rabbitmq-ha-discovery.default.svc.cluster.local: RabbitMQ 3.8.5 on Erlang 23.0.3
+
+</code></pre>
+
+<p>传统的服务器节点部署好后，如果在云端可以购买内部负载均衡代理所有节点的相关服务，提供给业务方。</p>
+
+<pre><code class="language-bash">#全手工打造
+yum install rabbitmq-server.noarch
+/etc/init.d/rabbitmq-server start
+/etc/init.d/rabbitmq-server stop
+#查看内容
+cat /var/lib/rabbitmq/.erlang.cookie
+#将上面的内容复制到所有节点对应位置
+#启动所有节点mq服务
+/etc/init.d/rabbitmq-server start
+#所有从节点执行
+rabbitmqctl stop_app
+#重置重节点
+rabbitmqctl reset
+#开启应用
+rabbitmqctl start_app
+#在master节点执行
+rabbitmqctl stop_app
+#master节点执行 
+rabbitmqctl reset
+#在master节点执行加入不同的slave节点  @是主机名或者ip
+rabbitmqctl join_cluster rabbit@slave1 rabbit@slave2
+#查看集群状态
+rabbitmqctl cluster_status
+
+#调整某节点为内存节点
+rabbitmqctl stop_app
+rabbitmqctl join_cluster --ram rabbit@slave1
+
+#设置HA策略
+rabbitmqctl set_policy ha-all &quot;&quot; '{&quot;ha-mode&quot;:&quot;all&quot;,&quot;ha-sync-mode&quot;:&quot;automatic&quot;}'
+
+</code></pre>
+            </article>
+
+            <ul class="pager blog-pager">
+                
+                <li class="previous">
+                    <a href="https://www.netmesh.cn/posts/devops/hpa%E8%87%AA%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9/" data-toggle="tooltip" data-placement="top" title="HPA自动扩缩容">&larr; 前一篇</a>
+                </li>
+                 
+            </ul>
+            
+            <div>
+                 
+                <h2>See Also</h2>
+                <ul>
+                    
+                    <li><a href="/posts/devops/hpa%E8%87%AA%E5%8A%A8%E6%89%A9%E7%BC%A9%E5%AE%B9/">HPA自动扩缩容</a></li>
+                    
+                    <li><a href="/posts/devops/k8s%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E4%B8%8E%E9%99%90%E5%88%B6%E8%AE%BE%E5%AE%9A%E8%A7%84%E8%8C%83/">k8s资源请求与限制设定规范</a></li>
+                    
+                    <li><a href="/posts/devops/%E6%89%A9%E5%AE%B9oracle%E9%87%8D%E5%81%9A%E6%97%A5%E5%BF%97/">扩容oracle重做日志大小提升性能</a></li>
+                    
+                    <li><a href="/posts/devops/pod%E5%86%85%E6%A0%B8tcp%E6%A0%88%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0%E4%BF%AE%E6%94%B9/">pod内核tcp栈相关参数修改</a></li>
+                    
+                    <li><a href="/posts/devops/k8s%E9%9D%A2%E6%9D%BFhttps%E4%BF%AE%E7%90%86/">修复k8s上使用dashboard证书的问题</a></li>
+                    
+                </ul>
+                
+            </div>
+            
+            
+            
+            
+<div>
+    <section id="datecount">
+        <h4 id="date"> Fri Jul 31, 2020</h4>
+    </section>
+    <h5 id="wc">400 Words|Read in about 2 Min</h5>
+    <h5 id="tags">Tags: 
+        
+        <a href="https://www.netmesh.cn/tags/devops/">Devops</a> &nbsp;
+    </h5>
+</div>
+
+            
+            </div>
+            
+            
+        </div>
+    </div>
+    </section>
+</div>
+
+  <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          <li>
+            <a href="mailto:sklinux@qq.com" title="Email me">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          <li>
+            <a href="https://www.netmesh.cn/index.xml" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          &copy;2001-2019 <a href="http://www.beian.miit.gov.cn/">蜀ICP备19040082号-1</a>
+          
+          
+          
+
+          
+          
+          
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://www.netmesh.cn/">服务器维护</a>
+          
+        </p>
+
+        
+        <p class="credits theme-by text-muted">
+          <img src="https://www.sklinux.com/img/weixin_gzh.jpg">
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://s.sklinux.com/hugo/bootstrap.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe-ui-default.min.js"></script>
+<script src="https://s.sklinux.com/hugo/photoSwipe/4.1.1/photoswipe.min.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/contrib/auto-render.min.js"></script>
+<script src="https://s.sklinux.com/hugo/main.js"></script>
+<script src="https://s.sklinux.com/hugo/prism.js"></script>
+<script src="https://s.sklinux.com/hugo/KaTeX-0.7.1/dist/katex.min.js"></script>
+
+<script> renderMathInElement(document.body); </script>
+
+
+
+
+
+</body>
+
+</html>
